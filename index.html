@@ -6,94 +6,484 @@
 <title>Calculateur d'échantillon – Audit (MUS / Aléatoire / Discovery)</title>
 <style>
   :root{
-    --bg:#0b1220; --panel:#121b2e; --muted:#9fb0ce; --text:#e8eefc;
-    --accent:#5aa0ff; --green:#36d399; --red:#ff7b7b; --yellow:#ffd166;
-    --line:#1f2b46;
+    --bg-primary: #f8fafc;
+    --bg-secondary: #ffffff;
+    --bg-accent: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --accent: #3b82f6;
+    --accent-light: #dbeafe;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --error: #ef4444;
+    --border: #e2e8f0;
+    --border-light: #f1f5f9;
+    --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    --radius: 12px;
   }
-  *{box-sizing:border-box}
-  html,body{height:100%}
-  body{
-    margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans";
-    background:linear-gradient(180deg, #0a1020 0%, #0b1220 100%);
-    color:var(--text);
+  
+  * { box-sizing: border-box; }
+  
+  html, body { 
+    height: 100%; 
+    margin: 0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
   }
-  header{
-    padding:18px 16px; border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#0e162a 0,#0b1220 100%);
-    position:sticky; top:0; z-index:10;
+  
+  /* Header */
+  header {
+    background: var(--bg-accent);
+    color: white;
+    padding: 2rem 1rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
   }
-  header .title{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
-  header .badge{font-size:12px; padding:4px 8px; background:#0f1a31; border:1px solid var(--line); border-radius:999px; color:var(--muted)}
-  main{max-width:1100px; margin:24px auto; padding:0 16px; display:grid; grid-template-columns: 1fr 1fr; gap:16px}
-  @media (max-width: 940px){ main{grid-template-columns:1fr} }
-  .card{
-    background:radial-gradient(1600px 500px at -200px 0px, rgba(90,160,255,.12), transparent 60%), var(--panel);
-    border:1px solid var(--line); border-radius:16px; padding:16px 14px 14px;
-    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  
+  header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
   }
-  .card h2{font-size:16px; margin:4px 0 12px 0; color:#dbe7ff; letter-spacing:.2px}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-  @media (max-width:640px){ .grid{grid-template-columns:1fr} }
-  label{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; color:#cfe0ff}
-  input[type="number"], input[type="text"], select{
-    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#0f182b;
-    color:var(--text); outline:none;
+  
+  .header-content {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
   }
-  input::placeholder{color:#8193b7}
-  .row{display:flex; gap:12px; flex-wrap:wrap}
-  .help{font-size:12px; color:var(--muted)}
-  .muted{color:var(--muted); font-size:12px; margin-top:4px}
-  .pill{padding:2px 8px; border-radius:999px; border:1px solid var(--line); background:#0e172b; font-size:12px; color:#bcd1ff}
-  .btn{
-    padding:12px 14px; border-radius:12px; border:1px solid #2a3a61; background:linear-gradient(180deg,#163260 0,#12264a 100%);
-    color:#dfe9ff; font-weight:600; cursor:pointer; transition:.18s transform ease;
+  
+  .header-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem 0;
+    letter-spacing: -0.025em;
   }
-  .btn:hover{transform:translateY(-1px)}
-  .btn.secondary{background:#111c33}
-  .actions{display:flex; gap:10px; flex-wrap:wrap}
-  .result{
-    background:linear-gradient(180deg,#0e1a31 0, #0e1526 100%); border:1px dashed #2b3b63; border-radius:16px; padding:14px;
+  
+  .header-subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin: 0 0 2rem 0;
   }
-  .result h3{margin:2px 0 8px 0}
-  .kv{display:grid; grid-template-columns: 1fr auto; gap:8px; padding:8px 0; border-bottom:1px dashed #223155}
-  .kv:last-child{border-bottom:none}
-  .kv .k{color:#a9c1f4}
-  .kv .v{font-weight:700}
-  .ok{color:var(--green)} .warn{color:var(--yellow)} .err{color:var(--red)}
-  .footer-note{opacity:.85; font-size:12px; color:#aabfe9}
-  .chip{font-size:11px; padding:2px 6px; border-radius:8px; border:1px solid #2a3b60; background:#0f1930; color:#cfe0ff}
-  details{background:#0f1930; border:1px solid #24365c; border-radius:12px; padding:10px 12px}
-  details summary{cursor:pointer; user-select:none}
-  .spacer{height:8px}
-  .export-bar{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  
+  .header-badges {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .badge {
+    background: rgba(255,255,255,0.2);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  /* Notice/Info Section */
+  .info-section {
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    padding: 2rem 1rem;
+  }
+  
+  .info-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+  }
+  
+  .info-card {
+    background: var(--accent-light);
+    padding: 1.5rem;
+    border-radius: var(--radius);
+    border-left: 4px solid var(--accent);
+  }
+  
+  .info-card h3 {
+    margin: 0 0 1rem 0;
+    color: var(--accent);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .info-card ul {
+    margin: 0;
+    padding-left: 1.2rem;
+  }
+  
+  .info-card li {
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+  }
+  
+  /* Main Content */
+  main {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+  }
+  
+  @media (max-width: 1024px) {
+    main { grid-template-columns: 1fr; }
+    .header-title { font-size: 2rem; }
+  }
+  
+  /* Cards */
+  .card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+    transform: translateY(-2px);
+  }
+  
+  .card h2 {
+    font-size: 1.5rem;
+    margin: 0 0 1.5rem 0;
+    color: var(--text-primary);
+    font-weight: 600;
+    border-bottom: 2px solid var(--border);
+    padding-bottom: 0.5rem;
+  }
+  
+  /* Form Elements */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  label {
+    font-weight: 500;
+    color: var(--text-primary);
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+  
+  input[type="number"], 
+  input[type="text"], 
+  select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+  
+  input:focus, select:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+  
+  input::placeholder {
+    color: var(--text-muted);
+  }
+  
+  /* Pills and Badges */
+  .pill {
+    background: var(--accent-light);
+    color: var(--accent);
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid var(--accent);
+  }
+  
+  .chip {
+    background: var(--bg-primary);
+    color: var(--text-secondary);
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--border);
+    font-weight: 500;
+  }
+  
+  /* Buttons */
+  .btn {
+    padding: 0.875rem 1.5rem;
+    border-radius: var(--radius);
+    border: none;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+  }
+  
+  .btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow);
+  }
+  
+  .btn.primary {
+    background: var(--accent);
+    color: white;
+  }
+  
+  .btn.primary:hover {
+    background: #2563eb;
+  }
+  
+  .btn.secondary {
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    border: 2px solid var(--border);
+  }
+  
+  .btn.secondary:hover {
+    background: var(--border-light);
+  }
+  
+  /* Actions */
+  .actions {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    align-items: center;
+    margin: 2rem 0 1rem 0;
+  }
+  
+  .export-bar {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  
+  /* Results */
+  .result {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin: 1rem 0;
+  }
+  
+  .result h3 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+    font-size: 1.25rem;
+  }
+  
+  .kv {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--border-light);
+  }
+  
+  .kv:last-child {
+    border-bottom: none;
+  }
+  
+  .kv .k {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+  
+  .kv .v {
+    font-weight: 600;
+    color: var(--text-primary);
+    text-align: right;
+  }
+  
+  /* Status Colors */
+  .ok { color: var(--success); }
+  .warn { color: var(--warning); }
+  .err { color: var(--error); }
+  
+  /* Details */
+  details {
+    background: var(--bg-primary);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    margin: 1rem 0;
+  }
+  
+  details summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--text-primary);
+    padding: 0.5rem;
+    border-radius: var(--radius);
+    transition: background 0.2s ease;
+  }
+  
+  details summary:hover {
+    background: var(--border-light);
+  }
+  
+  details[open] summary {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1rem;
+  }
+  
+  /* Helper text */
+  .help {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  
+  .muted {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+  .footer-note {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 1rem;
+    border-radius: var(--radius);
+    border-left: 4px solid var(--warning);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+  }
+  
+  /* Responsive visibility */
+  .random-only, .mus-only, .disc-only {
+    display: none;
+  }
+  
+  .technique-Random .random-only,
+  .technique-MUS .mus-only,
+  .technique-Discovery .disc-only {
+    display: block;
+  }
+  
+  /* Animations */
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .card {
+    animation: slideIn 0.6s ease-out;
+  }
+  
+  /* Spacer */
+  .spacer { height: 1rem; }
 </style>
 </head>
 <body>
+
 <header>
-  <div class="title">
-    <div style="font-weight:800; font-size:18px; color:#eaf1ff">Calculateur d'échantillon d'audit</div>
-    <span class="badge">Mono-fichier • Responsive</span>
-    <span class="badge">Techniques : MUS / Aléatoire / Discovery</span>
+  <div class="header-content">
+    <h1 class="header-title">🧮 Calculateur d'échantillon d'audit</h1>
+    <p class="header-subtitle">Outil professionnel pour déterminer la taille optimale d'échantillon en audit</p>
+    <div class="header-badges">
+      <span class="badge">✨ Interface moderne</span>
+      <span class="badge">📱 Responsive</span>
+      <span class="badge">🎯 MUS / Aléatoire / Discovery</span>
+    </div>
   </div>
 </header>
- 
-<main>
+
+<section class="info-section">
+  <div class="info-content">
+    <div class="info-card">
+      <h3>📋 Mode d'emploi</h3>
+      <ul>
+        <li><strong>Renseignez les paramètres</strong> de votre population à auditer</li>
+        <li><strong>Sélectionnez la technique</strong> d'échantillonnage appropriée</li>
+        <li><strong>Ajustez le niveau de risque</strong> selon votre évaluation</li>
+        <li><strong>Cliquez sur "Calculer"</strong> pour obtenir la taille d'échantillon</li>
+        <li><strong>Exportez vos résultats</strong> en CSV ou PDF si nécessaire</li>
+      </ul>
+    </div>
+    
+    <div class="info-card">
+      <h3>🎯 Techniques supportées</h3>
+      <ul>
+        <li><strong>MUS/PPS :</strong> Échantillonnage monétaire unitaire (recommandé pour les audits financiers)</li>
+        <li><strong>Aléatoire :</strong> Échantillonnage statistique classique par unités</li>
+        <li><strong>Discovery :</strong> Technique spécialisée pour détecter des anomalies rares</li>
+      </ul>
+    </div>
+    
+    <div class="info-card">
+      <h3>⚖️ Conformité & Standards</h3>
+      <ul>
+        <li><strong>Normes ISA :</strong> Conforme aux standards internationaux d'audit</li>
+        <li><strong>Calculs validés :</strong> Formules statistiques éprouvées</li>
+        <li><strong>Approche professionnelle :</strong> Adapté aux cabinets d'audit</li>
+        <li><strong>Gestion des key items :</strong> Prise en compte automatique</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<main id="mainContent" class="technique-MUS">
   <!-- Paramètres principaux -->
   <section class="card">
-    <h2>Paramètres de la population</h2>
+    <h2>⚙️ Paramètres de la population</h2>
     <div class="grid">
-      <div>
+      <div class="form-group">
         <label>Valeur de la population (€)
           <input id="population" type="number" min="0" step="0.01" placeholder="ex. 10 000 000" />
         </label>
       </div>
-      <div>
+      <div class="form-group">
         <label>Seuil/tolerable error (€)
           <input id="tolerable" type="number" min="0" step="0.01" placeholder="ex. 250 000" />
         </label>
         <div class="muted">TER% = TE / Population (calculé automatiquement)</div>
       </div>
-      <div>
+      <div class="form-group">
         <label>Risque combiné (CRA)
           <select id="cra">
             <option value="VeryLow">Très faible</option>
@@ -105,7 +495,7 @@
           </select>
         </label>
       </div>
-      <div>
+      <div class="form-group">
         <label>Assurance des autres procédures subst.
           <select id="aosp">
             <option value="Little" selected>Faible (Little)</option>
@@ -115,7 +505,7 @@
           </select>
         </label>
       </div>
-      <div>
+      <div class="form-group">
         <label>Technique d'échantillonnage
           <select id="technique">
             <option value="MUS" selected>MUS / PPS (€)</option>
@@ -124,108 +514,123 @@
           </select>
         </label>
       </div>
-      <div>
+      <div class="form-group">
         <label>Erreur attendue (EER %) <span class="pill">optionnel</span>
           <input id="eer" type="number" min="0" step="0.01" placeholder="ex. 0,30" />
         </label>
         <div class="muted">En % de la population (0 = aucune erreur anticipée)</div>
       </div>
     </div>
- 
+
     <div class="spacer"></div>
     <details>
-      <summary><strong>Key items et paramètres avancés</strong> (clique pour dérouler)</summary>
-      <div class="grid" style="margin-top:10px">
-        <div>
+      <summary><strong>🔧 Key items et paramètres avancés</strong> (cliquez pour dérouler)</summary>
+      <div class="grid" style="margin-top:1rem">
+        <div class="form-group">
           <label>Key items – nombre
             <input id="keyCount" type="number" min="0" step="1" placeholder="ex. 5" />
           </label>
         </div>
-        <div>
+        <div class="form-group">
           <label>Key items – montant total (€)
             <input id="keyAmount" type="number" min="0" step="0.01" placeholder="ex. 1 500 000" />
           </label>
           <div class="muted">Ces éléments seront testés à 100 %.</div>
         </div>
- 
-        <div class="random-only">
+
+        <div class="form-group random-only">
           <label>Nombre d'unités (N) <span class="pill">aléatoire</span>
             <input id="N" type="number" min="1" step="1" placeholder="ex. 12 000" />
           </label>
         </div>
-        <div class="random-only">
+        <div class="form-group random-only">
           <label>Prévalence attendue p (0-1) <span class="pill">aléatoire</span>
             <input id="p" type="number" min="0" max="1" step="0.001" placeholder="ex. 0,02" />
           </label>
           <div class="muted">Si vide, on utilisera p=0,5 (pire cas).</div>
         </div>
- 
-        <div class="mus-only">
+
+        <div class="form-group mus-only">
           <label>Erreurs planifiées (m) <span class="pill">MUS</span>
             <input id="mErrors" type="number" min="0" step="1" placeholder="ex. 0" />
           </label>
         </div>
-        <div class="mus-only">
-          <label>Relative error % (si MUS &gt; 0 erreurs)
+        <div class="form-group mus-only">
+          <label>Relative error % (si MUS > 0 erreurs)
             <input id="relErr" type="number" min="0" step="0.01" placeholder="ex. 100 (par défaut)" />
           </label>
         </div>
- 
-        <div class="disc-only">
+
+        <div class="form-group disc-only">
           <label>Taux d'occurrence tolérable DER (0-1) <span class="pill">Discovery</span>
             <input id="der" type="number" min="0" max="1" step="0.0001" placeholder="ex. 0,02" />
           </label>
         </div>
       </div>
-      <div class="muted" style="margin-top:8px">
-        Politique conservatrice : les key items "consomment" le seuil → TE′ = max(0, TE − montant key items). 
+      <div class="muted" style="margin-top:1rem">
+        <strong>Politique conservatrice :</strong> les key items "consomment" le seuil → TE′ = max(0, TE − montant key items). 
         Population résiduelle P′ = max(0, Population − montant key items).
       </div>
     </details>
- 
-    <div class="spacer"></div>
+
     <div class="actions">
-      <button class="btn" id="calcBtn">Calculer la taille d'échantillon</button>
-      <button class="btn secondary" id="resetBtn">Réinitialiser</button>
+      <button class="btn primary" id="calcBtn">🧮 Calculer la taille d'échantillon</button>
+      <button class="btn secondary" id="resetBtn">🔄 Réinitialiser</button>
       <span id="terBadge" class="chip">TER% : —</span>
       <span id="clBadge" class="chip">Confiance cible : —</span>
     </div>
-    <div id="alerts" class="muted" style="margin-top:8px"></div>
- 
+    
+    <div id="alerts" class="muted"></div>
+
     <div class="export-bar">
-      <button class="btn" id="csvBtn">Exporter CSV</button>
-      <button class="btn" id="pdfBtn">Exporter PDF</button>
+      <button class="btn secondary" id="csvBtn">📊 Exporter CSV</button>
+      <button class="btn secondary" id="pdfBtn">📄 Exporter PDF</button>
     </div>
   </section>
- 
+
   <!-- Résultats -->
   <section class="card">
-    <h2>Résultats</h2>
+    <h2>📈 Résultats</h2>
     <div class="result" id="resultBox">
-      <h3>En attente des paramètres…</h3>
-      <p class="help">Renseigne les champs et clique sur <strong>Calculer</strong>.</p>
+      <h3>⏳ En attente des paramètres…</h3>
+      <p class="help">Renseignez les champs et cliquez sur <strong>"Calculer"</strong> pour obtenir la taille d'échantillon recommandée.</p>
     </div>
+    
     <div class="spacer"></div>
+    
     <details>
-      <summary><strong>Hypothèses & méthode</strong></summary>
-      <div class="help" style="margin-top:8px; line-height:1.55">
-        • La matrice <em>Risque combiné × Assurance d'autres procédures</em> fixe une <strong>confiance statistique cible</strong> (CL), convertie en <em>RIA = 1 − CL</em>.<br/>
-        • <strong>MUS/PPS</strong> : intervalle monétaire <code>SI = TE′ / CF</code>, où <code>CF</code> dépend de RIA (tableau interpolé). Taille <code>n = ceil(P′ / SI) = ceil(P′·CF / TE′)</code>. 
-        • <strong>Aléatoire</strong> : formule binomiale <code>n0 = Z²·p(1−p)/d²</code>, d'où <code>d = TER%</code> ; correction de population finie <code>n = n0 / (1 + (n0 − 1)/N′)</code>. 
-        • <strong>Discovery</strong> : <code>n = ceil( ln(1−CL) / ln(1−DER) )</code>. 
-        • Key items : testés à 100 %, on calcule sur la population résiduelle <code>P′</code> (et <code>TE′</code> selon politique conservatrice).
+      <summary><strong>📚 Hypothèses & méthode</strong></summary>
+      <div class="help" style="margin-top:1rem; line-height:1.6">
+        <p><strong>Principe général :</strong> La matrice <em>Risque combiné × Assurance d'autres procédures</em> fixe une <strong>confiance statistique cible</strong> (CL), convertie en <em>RIA = 1 − CL</em>.</p>
+        
+        <p><strong>MUS/PPS :</strong> Intervalle monétaire <code>SI = TE′ / CF</code>, où <code>CF</code> dépend de RIA (tableau interpolé). Taille <code>n = ceil(P′ / SI) = ceil(P′·CF / TE′)</code>.</p>
+        
+        <p><strong>Aléatoire :</strong> Formule binomiale <code>n0 = Z²·p(1−p)/d²</code>, où <code>d = TER%</code> ; correction de population finie <code>n = n0 / (1 + (n0 − 1)/N′)</code>.</p>
+        
+        <p><strong>Discovery :</strong> <code>n = ceil( ln(1−CL) / ln(1−DER) )</code>.</p>
+        
+        <p><strong>Key items :</strong> Testés à 100 %, on calcule sur la population résiduelle <code>P′</code> (et <code>TE′</code> selon politique conservatrice).</p>
       </div>
     </details>
-    <div class="spacer"></div>
-    <p class="footer-note">⚠️ Cet outil est un aide-mémoire méthodologique. Calibrage interne des seuils/CL à valider par votre cabinet.</p>
+    
+    <div class="footer-note">
+      ⚠️ <strong>Avertissement :</strong> Cet outil est un aide-mémoire méthodologique. Le calibrage interne des seuils et niveaux de confiance doit être validé par votre cabinet d'audit selon vos procédures internes.
+    </div>
   </section>
 </main>
- 
+
 <script>
 /* ---------- Utilitaires ---------- */
 const fmtEuro = v => isFinite(v)? new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v):'—';
 const fmt = v => isFinite(v)? new Intl.NumberFormat('fr-FR').format(v):'—';
 const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
+
+// Gestion de l'affichage conditionnel selon la technique
+document.getElementById('technique').addEventListener('change', function() {
+  const main = document.getElementById('mainContent');
+  main.className = `technique-${this.value}`;
+});
+
 function nearestZ(cl){
   const table = [
     [0.80,1.282],[0.85,1.440],[0.90,1.645],[0.95,1.960],[0.975,2.241],[0.98,2.326],[0.99,2.576]
@@ -240,6 +645,7 @@ function nearestZ(cl){
     }
   }
 }
+
 /* CF (confidence factor) pour MUS en fonction de RIA (%) */
 const CF_POINTS = [
   [20,2.1],[15,2.5],[10,3.0],[7.5,3.2],[5,3.5],[2.5,4.6],[1,5.9]
@@ -255,7 +661,7 @@ function cfFromRIA(riaPct){
   }
   return CF_POINTS[0][1];
 }
- 
+
 /* ---------- Matrice CRA × AOSP -> RIA (%) ---------- */
 const CRA_LEVELS = ["VeryLow","Low","LowerMed","Medium","UpperMed","High"];
 const AOSP_LEVELS = ["Little","Some","Corroborative","Persuasive"];
@@ -265,7 +671,7 @@ function riaFromMatrix(cra,aosp){
   let ria = (RIA_BASE[cra] ?? 7.5) + (AOSP_ADJ[aosp] ?? 0);
   return clamp(ria, 1.0, 25.0);
 }
- 
+
 /* ---------- Calculs ---------- */
 function compute(){
   const population = +document.getElementById('population').value;
@@ -273,176 +679,29 @@ function compute(){
   const cra = document.getElementById('cra').value;
   const aosp = document.getElementById('aosp').value;
   const technique = document.getElementById('technique').value;
- 
+
   const eerPct = (document.getElementById('eer').value === '' ? null : +document.getElementById('eer').value); // %
   const keyCount = (document.getElementById('keyCount').value === '' ? 0 : +document.getElementById('keyCount').value);
   const keyAmount = (document.getElementById('keyAmount').value === '' ? 0 : +document.getElementById('keyAmount').value);
- 
+
   const N = (document.getElementById('N').value === '' ? null : +document.getElementById('N').value);
   const p = (document.getElementById('p').value === '' ? 0.5 : +document.getElementById('p').value);
- 
+
   const mErrors = (document.getElementById('mErrors').value === '' ? 0 : +document.getElementById('mErrors').value);
   const relErr = (document.getElementById('relErr').value === '' ? 100 : +document.getElementById('relErr').value);
- 
+
   const der = (document.getElementById('der').value === '' ? null : +document.getElementById('der').value);
- 
+
   const alerts = [];
- 
+
   if (!(population>0)) alerts.push("Veuillez saisir une valeur de population > 0.");
   if (!(tolerable>0)) alerts.push("Veuillez saisir un seuil/tolerable error > 0.");
   if (keyAmount<0 || keyCount<0) alerts.push("Key items : valeurs négatives non admises.");
   if (keyAmount>population) alerts.push("Le montant des key items ne peut pas excéder la population.");
   const terPct = (population>0 && tolerable>=0) ? (100*tolerable/population) : NaN;
- 
+
   // Politique conservatrice
   const Pp = Math.max(0, population - keyAmount);
   const TEp = Math.max(0, tolerable - keyAmount);
   if (Pp===0) alerts.push("Population résiduelle P′ = 0 (tous les éléments seraient en key items).");
-  if (TEp===0) alerts.push("Seuil résiduel TE′ = 0 : impossible de calculer n (réduisez les key items ou augmentez le seuil).");
- 
-  // RIA et CL
-  const riaPct = riaFromMatrix(cra,aosp);
-  let CL = 1 - riaPct/100;
- 
-  // Badges TER/CL
-  document.getElementById('terBadge').textContent = isFinite(terPct) ? `TER% : ${terPct.toFixed(2)} %` : "TER% : —";
-  document.getElementById('clBadge').textContent = `Confiance cible : ${(CL*100).toFixed(1)} %`;
- 
-  // Ajustements MUS par EER/m
-  const eerRatio = (eerPct!=null && population>0) ? (Math.max(0, eerPct)/ (100* tolerable/population)) : 0;
- 
-  let out = {technique, P:population, TE:tolerable, Pp, TEp, riaPct, CL, terPct, keyCount, keyAmount};
-  if (alerts.length){
-    renderResult(out, alerts);
-    window._lastReport = buildReportObject(out, alerts);
-    return;
-  }
- 
-  if (technique === "MUS"){
-    let CF = cfFromRIA(riaPct);
-    if (eerPct!=null && eerPct>0){
-      const alpha = 0.8;
-      CF = CF * (1 + alpha * eerRatio);
-      out.notes = [`Pénalité MUS pour erreur attendue : CF × (1 + ${alpha} × EER/TER).`];
-    }
-    if (mErrors>0){
-      const delta = Math.min(1.0, 0.3*mErrors);
-      CF = CF + delta;
-      out.notes = [...(out.notes||[]), `Majoration CF pour erreurs planifiées (m=${mErrors}) : +${delta.toFixed(2)}.`];
-    }
-    const SI = TEp/CF;
-    const n = (SI>0 && Pp>0) ? Math.ceil(Pp / SI) : NaN;
-    Object.assign(out,{CF,SI,n, eerPct, mErrors, relErr});
-    renderResult(out, alerts);
-  }
-  else if (technique === "Random"){
-    if (!(N>0)) alerts.push("Veuillez renseigner N (nombre d'unités) pour l'aléatoire.");
-    if (!(p>=0 && p<=1)) alerts.push("p (prévalence) doit être entre 0 et 1.");
-    const Z = nearestZ(CL);
-    const d = terPct/100;
-    const Np = Math.max(1, (N||1) - (keyCount||0));
-    const n0 = (Z*Z * p*(1-p)) / (d*d);
-    const n = n0 / (1 + (n0 - 1)/Np);
-    Object.assign(out,{Z,d,p,N,Np,n0, n:Math.ceil(n)});
-    renderResult(out, alerts);
-  }
-  else if (technique === "Discovery"){
-    if (!(der>0 && der<1)) alerts.push("DER (taux tolérable) doit être entre 0 et 1 pour Discovery.");
-    const n = Math.ceil( Math.log(1-CL) / Math.log(1-der) );
-    Object.assign(out,{DER:der, n});
-    renderResult(out, alerts);
-  }
- 
-  window._lastReport = buildReportObject(out, alerts);
-}
- 
-function renderResult(o, alerts){
-  const box = document.getElementById('resultBox');
-  const warn = [];
-  if (o.TEp===0) warn.push("TE′ = 0 → impossible de calculer (div/0).");
-  const cls = alerts.length? 'err' : (warn.length? 'warn' : 'ok');
-  let html = `<h3>Résultat • <span class="${cls}">${o.technique}</span></h3>`;
-  if (alerts.length){
-    html += `<p class="err"><strong>Vérifications requises :</strong><br>${alerts.map(a=>`• ${a}`).join('<br>')}</p>`;
-  }
-  html += `<div class="kv"><div class="k">Population (P)</div><div class="v">${fmtEuro(o.P)}</div></div>`;
-  html += `<div class="kv"><div class="k">Seuil tolérable (TE)</div><div class="v">${fmtEuro(o.TE)}</div></div>`;
-  html += `<div class="kv"><div class="k">Key items (nb / €)</div><div class="v">${fmt(o.keyCount||0)} / ${fmtEuro(o.keyAmount||0)}</div></div>`;
-  html += `<div class="kv"><div class="k">Population résiduelle (P′)</div><div class="v">${fmtEuro(o.Pp)}</div></div>`;
-  html += `<div class="kv"><div class="k">Seuil résiduel (TE′)</div><div class="v">${fmtEuro(o.TEp)}</div></div>`;
-  html += `<div class="kv"><div class="k">RIA cible (1−CL)</div><div class="v">${o.riaPct?.toFixed(2)} %</div></div>`;
-  html += `<div class="kv"><div class="k">Confiance statistique (CL)</div><div class="v">${(o.CL*100)?.toFixed(1)} %</div></div>`;
- 
-  if (o.technique==="MUS"){
-    html += `<div class="kv"><div class="k">Confidence factor (CF)</div><div class="v">${o.CF?o.CF.toFixed(2):'—'}</div></div>`;
-    html += `<div class="kv"><div class="k">Intervalle monétaire (SI)</div><div class="v">${isFinite(o.SI)?fmtEuro(o.SI):'—'}</div></div>`;
-    html += `<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
-  } else if (o.technique==="Random"){
-    html += `<div class="kv"><div class="k">N (après retrait key items)</div><div class="v">${fmt(o.Np||0)}</div></div>`;
-    html += `<div class="kv"><div class="k">Précision cible d = TER%</div><div class="v">${(o.d*100).toFixed(2)} %</div></div>`;
-    html += `<div class="kv"><div class="k">Statistique Z</div><div class="v">${o.Z?.toFixed(3)}</div></div>`;
-    html += `<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
-  } else if (o.technique==="Discovery"){
-    html += `<div class="kv"><div class="k">DER (taux d'occurrence tolérable)</div><div class="v">${(o.DER*100).toFixed(3)} %</div></div>`;
-    html += `<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
-  }
-  if (o.notes?.length){
-    html += `<div class="muted" style="margin-top:8px">${o.notes.map(t=>`• ${t}`).join('<br>')}</div>`;
-  }
-  box.innerHTML = html;
-}
- 
-/* --------- Construction d'un rapport exploitable (pour CSV/PDF) --------- */
-function buildReportObject(out, alerts){
-  const now = new Date();
-  const base = {
-    timestamp: now.toISOString(),
-    technique: out.technique,
-    population: out.P, tolerable: out.TE,
-    key_items_count: out.keyCount||0, key_items_amount: out.keyAmount||0,
-    population_residuelle: out.Pp, seuil_residuel: out.TEp,
-    ria_pct: out.riaPct, cl_pct: (out.CL*100),
-    alerts: alerts.slice()
-  };
-  if (out.technique === "MUS"){
-    Object.assign(base,{
-      CF: out.CF, SI: out.SI, n: out.n,
-      eer_pct: out.eerPct ?? null, planned_errors: out.mErrors ?? null, relative_error_pct: out.relErr ?? null
-    });
-  } else if (out.technique === "Random"){
-    Object.assign(base,{
-      N_total: out.N ?? null, N_apres_key: out.Np ?? null,
-      p: out.p ?? null, Z: out.Z ?? null, precision_d: out.d ?? null, n: out.n
-    });
-  } else if (out.technique === "Discovery"){
-    Object.assign(base,{
-      DER: out.DER ?? null, n: out.n
-    });
-  }
-  return base;
-}
- 
-/* ---------- Export CSV ---------- */
-function exportCSV(){
-  const rep = window._lastReport;
-  if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
-  // Aplatir l'objet en colonnes
-  const headers = Object.keys(rep);
-  const csvLine = headers.map(h=>{
-    const v = rep[h];
-    if (v==null) return '';
-    if (typeof v === 'string' && v.includes(',')) return `"${v.replace(/"/g,'""')}"`;
-    return v;
-  }).join(',');
-  const csv = headers.join(',') + '\n' + csvLine + '\n';
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  const stamp = new Date().toISOString().split('T')[0];
-  a.download = `sample_size_${rep.technique}_${stamp}.csv`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
- 
-/* ---------- Export PDF (fenêtre d'impression dédiée) ----------
+  if (TEp===0) alerts.push("Seuil résiduel TE
