@@ -680,7 +680,7 @@ function compute(){
   const aosp = document.getElementById('aosp').value;
   const technique = document.getElementById('technique').value;
 
-  const eerPct = (document.getElementById('eer').value === '' ? null : +document.getElementById('eer').value); // %
+  const eerPct = (document.getElementById('eer').value === '' ? null : +document.getElementById('eer').value);
   const keyCount = (document.getElementById('keyCount').value === '' ? 0 : +document.getElementById('keyCount').value);
   const keyAmount = (document.getElementById('keyAmount').value === '' ? 0 : +document.getElementById('keyAmount').value);
 
@@ -704,4 +704,273 @@ function compute(){
   const Pp = Math.max(0, population - keyAmount);
   const TEp = Math.max(0, tolerable - keyAmount);
   if (Pp===0) alerts.push("Population résiduelle P′ = 0 (tous les éléments seraient en key items).");
-  if (TEp===0) alerts.push("Seuil résiduel TE
+  if (TEp===0) alerts.push("Seuil résiduel TE′ = 0 : impossible de calculer n (réduisez les key items ou augmentez le seuil).");
+
+  // RIA et CL
+  const riaPct = riaFromMatrix(cra,aosp);
+  let CL = 1 - riaPct/100;
+
+  // Badges TER/CL
+  document.getElementById('terBadge').textContent = isFinite(terPct) ? `TER% : ${terPct.toFixed(2)} %` : "TER% : —";
+  document.getElementById('clBadge').textContent = `Confiance cible : ${(CL*100).toFixed(1)} %`;
+
+  // Ajustements MUS par EER/m
+  const eerRatio = (eerPct!=null && population>0) ? (Math.max(0, eerPct)/ (100* tolerable/population)) : 0;
+
+  let out = {technique, P:population, TE:tolerable, Pp, TEp, riaPct, CL, terPct, keyCount, keyAmount};
+  if (alerts.length){
+    renderResult(out, alerts);
+    window._lastReport = buildReportObject(out, alerts);
+    return;
+  }
+
+  if (technique === "MUS"){
+    let CF = cfFromRIA(riaPct);
+    if (eerPct!=null && eerPct>0){
+      const alpha = 0.8;
+      CF = CF * (1 + alpha * eerRatio);
+      out.notes = [`Pénalité MUS pour erreur attendue : CF × (1 + ${alpha} × EER/TER).`];
+    }
+    if (mErrors>0){
+      const delta = Math.min(1.0, 0.3*mErrors);
+      CF = CF + delta;
+      out.notes = [...(out.notes||[]), `Majoration CF pour erreurs planifiées (m=${mErrors}) : +${delta.toFixed(2)}.`];
+    }
+    const SI = TEp/CF;
+    const n = (SI>0 && Pp>0) ? Math.ceil(Pp / SI) : NaN;
+    Object.assign(out,{CF,SI,n, eerPct, mErrors, relErr});
+    renderResult(out, alerts);
+  }
+  else if (technique === "Random"){
+    if (!(N>0)) alerts.push("Veuillez renseigner N (nombre d'unités) pour l'aléatoire.");
+    if (!(p>=0 && p<=1)) alerts.push("p (prévalence) doit être entre 0 et 1.");
+    const Z = nearestZ(CL);
+    const d = terPct/100;
+    const Np = Math.max(1, (N||1) - (keyCount||0));
+    const n0 = (Z*Z * p*(1-p)) / (d*d);
+    const n = n0 / (1 + (n0 - 1)/Np);
+    Object.assign(out,{Z,d,p,N,Np,n0, n:Math.ceil(n)});
+    renderResult(out, alerts);
+  }
+  else if (technique === "Discovery"){
+    if (!(der>0 && der<1)) alerts.push("DER (taux tolérable) doit être entre 0 et 1 pour Discovery.");
+    const n = Math.ceil( Math.log(1-CL) / Math.log(1-der) );
+    Object.assign(out,{DER:der, n});
+    renderResult(out, alerts);
+  }
+
+  window._lastReport = buildReportObject(out, alerts);
+}
+
+function renderResult(o, alerts){
+  const box = document.getElementById('resultBox');
+  const warn = [];
+  if (o.TEp===0) warn.push("TE′ = 0 → impossible de calculer (div/0).");
+  const cls = alerts.length? 'err' : (warn.length? 'warn' : 'ok');
+  let html = `<h3>✅ Résultat • <span class="${cls}">${o.technique}</span></h3>`;
+  if (alerts.length){
+    html += `<p class="err"><strong>⚠️ Vérifications requises :</strong><br>${alerts.map(a=>`• ${a}`).join('<br>')}</p>`;
+  }
+  html += `<div class="kv"><div class="k">Population (P)</div><div class="v">${fmtEuro(o.P)}</div></div>`;
+  html += `<div class="kv"><div class="k">Seuil tolérable (TE)</div><div class="v">${fmtEuro(o.TE)}</div></div>`;
+  html += `<div class="kv"><div class="k">Key items (nb / €)</div><div class="v">${fmt(o.keyCount||0)} / ${fmtEuro(o.keyAmount||0)}</div></div>`;
+  html += `<div class="kv"><div class="k">Population résiduelle (P′)</div><div class="v">${fmtEuro(o.Pp)}</div></div>`;
+  html += `<div class="kv"><div class="k">Seuil résiduel (TE′)</div><div class="v">${fmtEuro(o.TEp)}</div></div>`;
+  html += `<div class="kv"><div class="k">RIA cible (1−CL)</div><div class="v">${o.riaPct?.toFixed(2)} %</div></div>`;
+  html += `<div class="kv"><div class="k">Confiance statistique (CL)</div><div class="v">${(o.CL*100)?.toFixed(1)} %</div></div>`;
+
+  if (o.technique==="MUS"){
+    html += `<div class="kv"><div class="k">Confidence factor (CF)</div><div class="v">${o.CF?o.CF.toFixed(2):'—'}</div></div>`;
+    html += `<div class="kv"><div class="k">Intervalle monétaire (SI)</div><div class="v">${isFinite(o.SI)?fmtEuro(o.SI):'—'}</div></div>`;
+    html += `<div class="kv"><div class="k">🎯 Taille d'échantillon (n)</div><div class="v"><strong>${isFinite(o.n)?fmt(o.n):'—'}</strong></div></div>`;
+  } else if (o.technique==="Random"){
+    html += `<div class="kv"><div class="k">N (après retrait key items)</div><div class="v">${fmt(o.Np||0)}</div></div>`;
+    html += `<div class="kv"><div class="k">Précision cible d = TER%</div><div class="v">${(o.d*100).toFixed(2)} %</div></div>`;
+    html += `<div class="kv"><div class="k">Statistique Z</div><div class="v">${o.Z?.toFixed(3)}</div></div>`;
+    html += `<div class="kv"><div class="k">🎯 Taille d'échantillon (n)</div><div class="v"><strong>${isFinite(o.n)?fmt(o.n):'—'}</strong></div></div>`;
+  } else if (o.technique==="Discovery"){
+    html += `<div class="kv"><div class="k">DER (taux d'occurrence tolérable)</div><div class="v">${(o.DER*100).toFixed(3)} %</div></div>`;
+    html += `<div class="kv"><div class="k">🎯 Taille d'échantillon (n)</div><div class="v"><strong>${isFinite(o.n)?fmt(o.n):'—'}</strong></div></div>`;
+  }
+  if (o.notes?.length){
+    html += `<div class="muted" style="margin-top:1rem">${o.notes.map(t=>`• ${t}`).join('<br>')}</div>`;
+  }
+  box.innerHTML = html;
+}
+
+/* --------- Construction d'un rapport exploitable (pour CSV/PDF) --------- */
+function buildReportObject(out, alerts){
+  const now = new Date();
+  const base = {
+    timestamp: now.toISOString(),
+    technique: out.technique,
+    population: out.P, tolerable: out.TE,
+    key_items_count: out.keyCount||0, key_items_amount: out.keyAmount||0,
+    population_residuelle: out.Pp, seuil_residuel: out.TEp,
+    ria_pct: out.riaPct, cl_pct: (out.CL*100),
+    alerts: alerts.slice()
+  };
+  if (out.technique === "MUS"){
+    Object.assign(base,{
+      CF: out.CF, SI: out.SI, n: out.n,
+      eer_pct: out.eerPct ?? null, planned_errors: out.mErrors ?? null, relative_error_pct: out.relErr ?? null
+    });
+  } else if (out.technique === "Random"){
+    Object.assign(base,{
+      N_total: out.N ?? null, N_apres_key: out.Np ?? null,
+      p: out.p ?? null, Z: out.Z ?? null, precision_d: out.d ?? null, n: out.n
+    });
+  } else if (out.technique === "Discovery"){
+    Object.assign(base,{
+      DER: out.DER ?? null, n: out.n
+    });
+  }
+  return base;
+}
+
+/* ---------- Export CSV ---------- */
+function exportCSV(){
+  const rep = window._lastReport;
+  if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
+  const headers = Object.keys(rep);
+  const csvLine = headers.map(h=>{
+    const v = rep[h];
+    if (v==null) return '';
+    if (typeof v === 'string' && v.includes(',')) return `"${v.replace(/"/g,'""')}"`;
+    return v;
+  }).join(',');
+  const csv = headers.join(',') + '\n' + csvLine + '\n';
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const stamp = new Date().toISOString().split('T')[0];
+  a.download = `sample_size_${rep.technique}_${stamp}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+/* ---------- Export PDF (fenêtre d'impression dédiée) ---------- */
+function exportPDF(){
+  const rep = window._lastReport;
+  if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
+  
+  const printWindow = window.open('', '_blank');
+  const stamp = new Date().toLocaleDateString('fr-FR');
+  
+  printWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Rapport d'échantillonnage d'audit - ${stamp}</title>
+      <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #3b82f6; border-bottom: 2px solid #3b82f6; }
+        .info { background: #f8fafc; padding: 15px; border-radius: 8px; margin: 15px 0; }
+        table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; }
+        th { background: #f1f5f9; }
+        .highlight { background: #dbeafe; font-weight: bold; }
+      </style>
+    </head>
+    <body>
+      <h1>📊 Rapport d'échantillonnage d'audit</h1>
+      <div class="info">
+        <p><strong>Date de génération :</strong> ${stamp}</p>
+        <p><strong>Technique utilisée :</strong> ${rep.technique}</p>
+        <p><strong>Taille d'échantillon recommandée :</strong> ${rep.n || '—'}</p>
+      </div>
+      
+      <h2>Paramètres de la population</h2>
+      <table>
+        <tr><th>Paramètre</th><th>Valeur</th></tr>
+        <tr><td>Population totale</td><td>${fmtEuro(rep.population)}</td></tr>
+        <tr><td>Seuil tolérable</td><td>${fmtEuro(rep.tolerable)}</td></tr>
+        <tr><td>Key items (nombre)</td><td>${rep.key_items_count}</td></tr>
+        <tr><td>Key items (montant)</td><td>${fmtEuro(rep.key_items_amount)}</td></tr>
+        <tr><td>Population résiduelle</td><td>${fmtEuro(rep.population_residuelle)}</td></tr>
+        <tr><td>Seuil résiduel</td><td>${fmtEuro(rep.seuil_residuel)}</td></tr>
+      </table>
+
+      <h2>Paramètres de risque</h2>
+      <table>
+        <tr><th>Paramètre</th><th>Valeur</th></tr>
+        <tr><td>RIA cible</td><td>${rep.ria_pct?.toFixed(2)} %</td></tr>
+        <tr><td>Confiance statistique</td><td>${rep.cl_pct?.toFixed(1)} %</td></tr>
+      </table>
+
+      <h2>Résultat final</h2>
+      <table>
+        <tr class="highlight"><td><strong>Taille d'échantillon recommandée</strong></td><td><strong>${rep.n || 'Non calculé'}</strong></td></tr>
+      </table>
+
+      <div class="info">
+        <p><strong>⚠️ Avertissement :</strong> Ce rapport est généré par un outil d'aide à la décision. 
+        Les résultats doivent être validés selon les procédures internes de votre cabinet d'audit.</p>
+      </div>
+    </body>
+    </html>
+  `);
+  
+  printWindow.document.close();
+  printWindow.focus();
+  setTimeout(() => printWindow.print(), 500);
+}
+
+/* ---------- Réinitialisation ---------- */
+function resetForm(){
+  document.querySelectorAll('input[type="number"], input[type="text"], select').forEach(el => {
+    if (el.id === 'cra') el.value = 'Medium';
+    else if (el.id === 'aosp') el.value = 'Little';
+    else if (el.id === 'technique') el.value = 'MUS';
+    else el.value = '';
+  });
+  
+  document.getElementById('terBadge').textContent = 'TER% : —';
+  document.getElementById('clBadge').textContent = 'Confiance cible : —';
+  document.getElementById('alerts').textContent = '';
+  
+  const resultBox = document.getElementById('resultBox');
+  resultBox.innerHTML = `
+    <h3>⏳ En attente des paramètres…</h3>
+    <p class="help">Renseignez les champs et cliquez sur <strong>"Calculer"</strong> pour obtenir la taille d'échantillon recommandée.</p>
+  `;
+  
+  // Reset technique class
+  document.getElementById('mainContent').className = 'technique-MUS';
+  
+  window._lastReport = null;
+}
+
+/* ---------- Event Listeners ---------- */
+document.getElementById('calcBtn').addEventListener('click', compute);
+document.getElementById('resetBtn').addEventListener('click', resetForm);
+document.getElementById('csvBtn').addEventListener('click', exportCSV);
+document.getElementById('pdfBtn').addEventListener('click', exportPDF);
+
+// Auto-update badges when inputs change
+document.getElementById('population').addEventListener('input', updateBadges);
+document.getElementById('tolerable').addEventListener('input', updateBadges);
+document.getElementById('cra').addEventListener('change', updateBadges);
+document.getElementById('aosp').addEventListener('change', updateBadges);
+
+function updateBadges() {
+  const population = +document.getElementById('population').value || 0;
+  const tolerable = +document.getElementById('tolerable').value || 0;
+  const cra = document.getElementById('cra').value;
+  const aosp = document.getElementById('aosp').value;
+  
+  const terPct = (population > 0 && tolerable >= 0) ? (100 * tolerable / population) : NaN;
+  const riaPct = riaFromMatrix(cra, aosp);
+  const CL = 1 - riaPct / 100;
+  
+  document.getElementById('terBadge').textContent = isFinite(terPct) ? `TER% : ${terPct.toFixed(2)} %` : "TER% : —";
+  document.getElementById('clBadge').textContent = `Confiance cible : ${(CL * 100).toFixed(1)} %`;
+}
+
+// Initialize
+updateBadges();
+</script>
+
+</body>
+</html>
