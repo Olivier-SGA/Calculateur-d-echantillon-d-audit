@@ -12,34 +12,60 @@
   }
   *{box-sizing:border-box}
   html,body{height:100%}
-  body{margin:0; font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;
-    background:linear-gradient(180deg,#0a1020 0%,#0b1220 100%); color:var(--text)}
-  header{padding:18px 16px; border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#0e162a 0,#0b1220 100%); position:sticky; top:0; z-index:10}
+  body{
+    margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans";
+    background:linear-gradient(180deg, #0a1020 0%, #0b1220 100%);
+    color:var(--text);
+  }
+  header{
+    padding:18px 16px; border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#0e162a 0,#0b1220 100%);
+    position:sticky; top:0; z-index:10;
+  }
   header .title{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
   header .badge{font-size:12px; padding:4px 8px; background:#0f1a31; border:1px solid var(--line); border-radius:999px; color:var(--muted)}
-  main{max-width:1100px; margin:24px auto; padding:0 16px; display:grid; grid-template-columns:1fr 1fr; gap:16px}
-  @media (max-width:940px){main{grid-template-columns:1fr}}
-  .card{background:radial-gradient(1600px 500px at -200px 0px, rgba(90,160,255,.12), transparent 60%), var(--panel);
-    border:1px solid var(--line); border-radius:16px; padding:16px 14px 14px; box-shadow:0 6px 16px rgba(0,0,0,.25)}
-  .card h2{font-size:16px; margin:4px 0 12px; color:#dbe7ff; letter-spacing:.2px}
+  main{max-width:1100px; margin:24px auto; padding:0 16px; display:grid; grid-template-columns: 1fr 1fr; gap:16px}
+  @media (max-width: 940px){ main{grid-template-columns:1fr} }
+  .card{
+    background:radial-gradient(1600px 500px at -200px 0px, rgba(90,160,255,.12), transparent 60%), var(--panel);
+    border:1px solid var(--line); border-radius:16px; padding:16px 14px 14px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+  }
+  .card h2{font-size:16px; margin:4px 0 12px 0; color:#dbe7ff; letter-spacing:.2px}
   .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-  @media (max-width:640px){.grid{grid-template-columns:1fr}}
+  @media (max-width:640px){ .grid{grid-template-columns:1fr} }
   label{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; color:#cfe0ff}
-  input[type="number"], select{width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#0f182b; color:var(--text); outline:none}
-  .help{font-size:12px; color:var(--muted)} .muted{color:var(--muted); font-size:12px; margin-top:4px}
+  input[type="number"], input[type="text"], select{
+    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#0f182b;
+    color:var(--text); outline:none;
+  }
+  input::placeholder{color:#8193b7}
+  .row{display:flex; gap:12px; flex-wrap:wrap}
+  .help{font-size:12px; color:var(--muted)}
+  .muted{color:var(--muted); font-size:12px; margin-top:4px}
   .pill{padding:2px 8px; border-radius:999px; border:1px solid var(--line); background:#0e172b; font-size:12px; color:#bcd1ff}
-  .btn{padding:12px 14px; border-radius:12px; border:1px solid #2a3a61; background:linear-gradient(180deg,#163260 0,#12264a 100%);
-    color:#dfe9ff; font-weight:600; cursor:pointer; transition:.18s transform}
-  .btn:hover{transform:translateY(-1px)} .btn.secondary{background:#111c33}
+  .btn{
+    padding:12px 14px; border-radius:12px; border:1px solid #2a3a61; background:linear-gradient(180deg,#163260 0,#12264a 100%);
+    color:#dfe9ff; font-weight:600; cursor:pointer; transition:.18s transform ease;
+  }
+  .btn:hover{transform:translateY(-1px)}
+  .btn.secondary{background:#111c33}
   .actions{display:flex; gap:10px; flex-wrap:wrap}
-  .result{background:linear-gradient(180deg,#0e1a31 0,#0e1526 100%); border:1px dashed #2b3b63; border-radius:16px; padding:14px}
-  .kv{display:grid; grid-template-columns:1fr auto; gap:8px; padding:8px 0; border-bottom:1px dashed #223155}
-  .kv:last-child{border-bottom:none} .kv .k{color:#a9c1f4} .kv .v{font-weight:700}
+  .result{
+    background:linear-gradient(180deg,#0e1a31 0, #0e1526 100%); border:1px dashed #2b3b63; border-radius:16px; padding:14px;
+  }
+  .result h3{margin:2px 0 8px 0}
+  .kv{display:grid; grid-template-columns: 1fr auto; gap:8px; padding:8px 0; border-bottom:1px dashed #223155}
+  .kv:last-child{border-bottom:none}
+  .kv .k{color:#a9c1f4}
+  .kv .v{font-weight:700}
   .ok{color:var(--green)} .warn{color:var(--yellow)} .err{color:var(--red)}
+  .footer-note{opacity:.85; font-size:12px; color:#aabfe9}
   .chip{font-size:11px; padding:2px 6px; border-radius:8px; border:1px solid #2a3b60; background:#0f1930; color:#cfe0ff}
   details{background:#0f1930; border:1px solid #24365c; border-radius:12px; padding:10px 12px}
-  details summary{cursor:pointer} .spacer{height:8px} .export-bar{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  details summary{cursor:pointer; user-select:none}
+  .spacer{height:8px}
+  .export-bar{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
 </style>
 </head>
 <body>
@@ -52,19 +78,20 @@
 </header>
  
 <main>
+  <!-- Paramètres principaux -->
   <section class="card">
     <h2>Paramètres de la population</h2>
     <div class="grid">
       <div>
         <label>Valeur de la population (€)
-          <input id="population" type="number" min="0" step="0.01" placeholder="ex. 10 000 000">
+          <input id="population" type="number" min="0" step="0.01" placeholder="ex. 10 000 000" />
         </label>
       </div>
       <div>
         <label>Seuil/tolerable error (€)
-          <input id="tolerable" type="number" min="0" step="0.01" placeholder="ex. 250 000">
+          <input id="tolerable" type="number" min="0" step="0.01" placeholder="ex. 250 000" />
         </label>
-        <div class="muted">TER% = TE / Population</div>
+        <div class="muted">TER% = TE / Population (calculé automatiquement)</div>
       </div>
       <div>
         <label>Risque combiné (CRA)
@@ -79,7 +106,7 @@
         </label>
       </div>
       <div>
-        <label>Assurance autres procédures
+        <label>Assurance des autres procédures subst.
           <select id="aosp">
             <option value="Little" selected>Faible (Little)</option>
             <option value="Some">Modérée (Some)</option>
@@ -89,7 +116,7 @@
         </label>
       </div>
       <div>
-        <label>Technique
+        <label>Technique d'échantillonnage
           <select id="technique">
             <option value="MUS" selected>MUS / PPS (€)</option>
             <option value="Random">Aléatoire (unités)</option>
@@ -99,26 +126,28 @@
       </div>
       <div>
         <label>Erreur attendue (EER %) <span class="pill">optionnel</span>
-          <input id="eer" type="number" min="0" step="0.01" placeholder="ex. 0,30">
+          <input id="eer" type="number" min="0" step="0.01" placeholder="ex. 0,30" />
         </label>
+        <div class="muted">En % de la population (0 = aucune erreur anticipée)</div>
       </div>
     </div>
  
     <div class="spacer"></div>
     <details>
-      <summary><strong>Key items & avancés</strong> (clique)</summary>
+      <summary><strong>Key items et paramètres avancés</strong> (clique pour dérouler)</summary>
       <div class="grid" style="margin-top:10px">
         <div>
           <label>Key items – nombre
-            <input id="keyCount" type="number" min="0" step="1" placeholder="ex. 5">
+            <input id="keyCount" type="number" min="0" step="1" placeholder="ex. 5" />
           </label>
         </div>
         <div>
           <label>Key items – montant total (€)
-            <input id="keyAmount" type="number" min="0" step="0.01" placeholder="ex. 1 500 000">
+            <input id="keyAmount" type="number" min="0" step="0.01" placeholder="ex. 1 500 000" />
           </label>
+          <div class="muted">Ces éléments seront testés à 100 %.</div>
         </div>
- 
+
         <div>
           <label>Politique key items
             <select id="policy">
@@ -127,45 +156,46 @@
             </select>
           </label>
         </div>
+        <div></div>
  
         <div class="random-only">
-          <label>Nombre d'unités (N)
-            <input id="N" type="number" min="1" step="1" placeholder="ex. 12 000">
+          <label>Nombre d'unités (N) <span class="pill">aléatoire</span>
+            <input id="N" type="number" min="1" step="1" placeholder="ex. 12 000" />
           </label>
         </div>
         <div class="random-only">
-          <label>Prévalence attendue p (0-1)
-            <input id="p" type="number" min="0" max="1" step="0.001" placeholder="ex. 0,02">
+          <label>Prévalence attendue p (0-1) <span class="pill">aléatoire</span>
+            <input id="p" type="number" min="0" max="1" step="0.001" placeholder="ex. 0,02" />
           </label>
-          <div class="muted">Si vide : p = 0,5.</div>
+          <div class="muted">Si vide, on utilisera p=0,5 (pire cas).</div>
         </div>
  
         <div class="mus-only">
-          <label>Erreurs planifiées (m)
-            <input id="mErrors" type="number" min="0" step="1" placeholder="ex. 0">
+          <label>Erreurs planifiées (m) <span class="pill">MUS</span>
+            <input id="mErrors" type="number" min="0" step="1" placeholder="ex. 0" />
           </label>
         </div>
         <div class="mus-only">
-          <label>Relative error % (si m &gt; 0)
-            <input id="relErr" type="number" min="0" step="0.01" placeholder="ex. 100">
+          <label>Relative error % (si MUS &gt; 0 erreurs)
+            <input id="relErr" type="number" min="0" step="0.01" placeholder="ex. 100 (par défaut)" />
           </label>
         </div>
  
         <div class="disc-only">
-          <label>DER (0-1) – Discovery
-            <input id="der" type="number" min="0" max="1" step="0.0001" placeholder="ex. 0,02">
+          <label>Taux d'occurrence tolérable DER (0-1) <span class="pill">Discovery</span>
+            <input id="der" type="number" min="0" max="1" step="0.0001" placeholder="ex. 0,02" />
           </label>
         </div>
       </div>
       <div class="muted" style="margin-top:8px">
-        MicroSTART-like : les key items sortent de la population P (P′ = P − key) mais n'affectent pas TE (TE′ = TE).<br>
-        Conservatrice : TE′ = max(0, TE − key).
+        <strong>MicroSTART-like</strong> : les key items sortent de la population P (P′ = P − key) mais n'affectent pas TE (TE′ = TE).<br/>
+        <strong>Conservatrice</strong> : les key items "consomment" le seuil → TE′ = max(0, TE − montant key items).
       </div>
     </details>
  
     <div class="spacer"></div>
     <div class="actions">
-      <button class="btn" id="calcBtn">Calculer</button>
+      <button class="btn" id="calcBtn">Calculer la taille d'échantillon</button>
       <button class="btn secondary" id="resetBtn">Réinitialiser</button>
       <span id="terBadge" class="chip">TER% : —</span>
       <span id="clBadge" class="chip">Confiance cible : —</span>
@@ -178,196 +208,236 @@
     </div>
   </section>
  
+  <!-- Résultats -->
   <section class="card">
     <h2>Résultats</h2>
     <div class="result" id="resultBox">
       <h3>En attente des paramètres…</h3>
       <p class="help">Renseigne les champs et clique sur <strong>Calculer</strong>.</p>
     </div>
+    <div class="spacer"></div>
+    <details>
+      <summary><strong>Hypothèses & méthode</strong></summary>
+      <div class="help" style="margin-top:8px; line-height:1.55">
+        • La matrice <em>Risque combiné × Assurance d'autres procédures</em> fixe une <strong>confiance statistique cible</strong> (CL), convertie en <em>RIA = 1 − CL</em>.<br/>
+        • <strong>MUS/PPS</strong> : intervalle monétaire <code>SI = TE′ / CF</code>, où <code>CF</code> dépend de RIA (tableau interpolé). Taille <code>n = ceil(P′ / SI) = ceil(P′·CF / TE′)</code>. 
+        • <strong>Aléatoire</strong> : formule binomiale <code>n0 = Z²·p(1−p)/d²</code>, d'où <code>d = TER%</code> ; correction de population finie <code>n = n0 / (1 + (n0 − 1)/N′)</code>. 
+        • <strong>Discovery</strong> : <code>n = ceil( ln(1−CL) / ln(1−DER) )</code>. 
+        • <strong>Key items</strong> : testés à 100 %, on calcule sur la population résiduelle <code>P′</code>. Selon la politique choisie : MicroSTART-like (<code>TE′ = TE</code>) ou conservatrice (<code>TE′ = TE − key</code>).
+      </div>
+    </details>
+    <div class="spacer"></div>
+    <p class="footer-note">⚠️ Cet outil est un aide-mémoire méthodologique. Calibrage interne des seuils/CL à valider par votre cabinet.</p>
   </section>
 </main>
  
 <script>
-/* ---------- Utils ---------- */
-const fmtEuro=v=>isFinite(v)?new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v):'—';
-const fmt=v=>isFinite(v)?new Intl.NumberFormat('fr-FR').format(v):'—';
-const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+/* ---------- Utilitaires ---------- */
+const fmtEuro = v => isFinite(v)? new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v):'—';
+const fmt = v => isFinite(v)? new Intl.NumberFormat('fr-FR').format(v):'—';
+const clamp = (x,a,b)=>Math.max(a,Math.min(b,x));
 function nearestZ(cl){
-  const t=[[0.80,1.282],[0.85,1.440],[0.90,1.645],[0.95,1.960],[0.975,2.241],[0.98,2.326],[0.99,2.576]];
-  if (cl<=t[0][0]) return t[0][1]; if (cl>=t[t.length-1][0]) return t[t.length-1][1];
-  for(let i=0;i<t.length-1;i++){const [c1,z1]=t[i],[c2,z2]=t[i+1]; if(cl>=c1&&cl<=c2){const u=(cl-c1)/(c2-c1); return z1+(z2-z1)*u;}}
+  const table = [
+    [0.80,1.282],[0.85,1.440],[0.90,1.645],[0.95,1.960],[0.975,2.241],[0.98,2.326],[0.99,2.576]
+  ];
+  if (cl<=table[0][0]) return table[0][1];
+  if (cl>=table[table.length-1][0]) return table[table.length-1][1];
+  for(let i=0;i<table.length-1;i++){
+    const [c1,z1]=table[i], [c2,z2]=table[i+1];
+    if (cl>=c1 && cl<=c2){
+      const t=(cl-c1)/(c2-c1);
+      return z1+(z2-z1)*t;
+    }
+  }
 }
-const CF_POINTS=[[20,2.1],[15,2.5],[10,3.0],[7.5,3.2],[5,3.5],[2.5,4.6],[1,5.9]];
-function cfFromRIA(r){r=clamp(r,0.5,25);for(let i=0;i<CF_POINTS.length-1;i++){const[a,b]=CF_POINTS[i],[c,d]=CF_POINTS[i+1];if(r>=c&&r<=a){const t=(r-c)/(a-c);return d+(b-d)*t}}return CF_POINTS[0][1]}
-const RIA_BASE={"VeryLow":15,"Low":12,"LowerMed":10,"Medium":7.5,"UpperMed":5,"High":2.5};
-const AOSP_ADJ={"Little":0,"Some":2.5,"Corroborative":5,"Persuasive":7.5};
-function riaFromMatrix(cra,aosp){return clamp((RIA_BASE[cra]??7.5)+(AOSP_ADJ[aosp]??0),1,25)}
+/* CF (confidence factor) pour MUS en fonction de RIA (%) */
+const CF_POINTS = [
+  [20,2.1],[15,2.5],[10,3.0],[7.5,3.2],[5,3.5],[2.5,4.6],[1,5.9]
+];
+function cfFromRIA(riaPct){
+  riaPct = clamp(riaPct, 0.5, 25);
+  for(let i=0;i<CF_POINTS.length-1;i++){
+    const [x1,y1]=CF_POINTS[i], [x2,y2]=CF_POINTS[i+1];
+    if (riaPct>=x2 && riaPct<=x1){
+      const t=(riaPct-x2)/(x1-x2);
+      return y2+(y1-y2)*t;
+    }
+  }
+  return CF_POINTS[0][1];
+}
  
-/* ---------- Compute ---------- */
+/* ---------- Matrice CRA × AOSP -> RIA (%) ---------- */
+const CRA_LEVELS = ["VeryLow","Low","LowerMed","Medium","UpperMed","High"];
+const AOSP_LEVELS = ["Little","Some","Corroborative","Persuasive"];
+const RIA_BASE = { "VeryLow":15,"Low":12,"LowerMed":10,"Medium":7.5,"UpperMed":5,"High":2.5 };
+const AOSP_ADJ = { "Little":0.0,"Some":2.5,"Corroborative":5.0,"Persuasive":7.5 };
+function riaFromMatrix(cra,aosp){
+  let ria = (RIA_BASE[cra] ?? 7.5) + (AOSP_ADJ[aosp] ?? 0);
+  return clamp(ria, 1.0, 25.0);
+}
+ 
+/* ---------- Calculs ---------- */
 function compute(){
-  const P=+document.getElementById('population').value;
-  const TE=+document.getElementById('tolerable').value;
-  const cra=document.getElementById('cra').value;
-  const aosp=document.getElementById('aosp').value;
-  const technique=document.getElementById('technique').value;
-  const policy=document.getElementById('policy').value;
+  const population = +document.getElementById('population').value;
+  const tolerable  = +document.getElementById('tolerable').value;
+  const cra = document.getElementById('cra').value;
+  const aosp = document.getElementById('aosp').value;
+  const technique = document.getElementById('technique').value;
+  const policy = document.getElementById('policy').value;
  
-  const eerPct=(document.getElementById('eer').value===''?null:+document.getElementById('eer').value);
-  const keyCount=(document.getElementById('keyCount').value===''?0:+document.getElementById('keyCount').value);
-  const keyAmount=(document.getElementById('keyAmount').value===''?0:+document.getElementById('keyAmount').value);
+  const eerPct = (document.getElementById('eer').value === '' ? null : +document.getElementById('eer').value); // %
+  const keyCount = (document.getElementById('keyCount').value === '' ? 0 : +document.getElementById('keyCount').value);
+  const keyAmount = (document.getElementById('keyAmount').value === '' ? 0 : +document.getElementById('keyAmount').value);
  
-  const N=(document.getElementById('N').value===''?null:+document.getElementById('N').value);
-  const p=(document.getElementById('p').value===''?0.5:+document.getElementById('p').value);
-  const mErrors=(document.getElementById('mErrors').value===''?0:+document.getElementById('mErrors').value);
-  const relErr=(document.getElementById('relErr').value===''?100:+document.getElementById('relErr').value);
-  const der=(document.getElementById('der').value===''?null:+document.getElementById('der').value);
+  const N = (document.getElementById('N').value === '' ? null : +document.getElementById('N').value);
+  const p = (document.getElementById('p').value === '' ? 0.5 : +document.getElementById('p').value);
  
-  const alerts=[];
-  if(!(P>0)) alerts.push("Population > 0 requise.");
-  if(!(TE>0)) alerts.push("Seuil tolérable > 0 requis.");
-  if(keyAmount<0||keyCount<0) alerts.push("Key items : valeurs négatives non admises.");
-  if(keyAmount>P) alerts.push("Le montant des key items ne peut pas excéder la population.");
-  const terPct=(P>0&&TE>=0)?(100*TE/P):NaN;
+  const mErrors = (document.getElementById('mErrors').value === '' ? 0 : +document.getElementById('mErrors').value);
+  const relErr = (document.getElementById('relErr').value === '' ? 100 : +document.getElementById('relErr').value);
+ 
+  const der = (document.getElementById('der').value === '' ? null : +document.getElementById('der').value);
+ 
+  const alerts = [];
+ 
+  if (!(population>0)) alerts.push("Veuillez saisir une valeur de population > 0.");
+  if (!(tolerable>0)) alerts.push("Veuillez saisir un seuil/tolerable error > 0.");
+  if (keyAmount<0 || keyCount<0) alerts.push("Key items : valeurs négatives non admises.");
+  if (keyAmount>population) alerts.push("Le montant des key items ne peut pas excéder la population.");
+  const terPct = (population>0 && tolerable>=0) ? (100*tolerable/population) : NaN;
  
   // Politique key items
-  const Pp=Math.max(0,P-keyAmount);
-  const TEp = (policy==='conservative') ? Math.max(0, TE - keyAmount) : TE;
-  if (policy==='conservative' && TEp===0) alerts.push("TE′ = 0 avec la politique conservatrice : augmentez TE ou réduisez les key items.");
+  const Pp = Math.max(0, population - keyAmount);
+  const TEp = (policy === 'conservative') ? Math.max(0, tolerable - keyAmount) : tolerable;
+  
+  if (Pp===0) alerts.push("Population résiduelle P′ = 0 (tous les éléments seraient en key items).");
+  if (policy === 'conservative' && TEp === 0) alerts.push("Seuil résiduel TE′ = 0 avec la politique conservatrice : impossible de calculer n (réduisez les key items ou augmentez le seuil).");
  
-  // RIA/CL
-  const riaPct=riaFromMatrix(cra,aosp);
-  const CL=1-riaPct/100;
-  document.getElementById('terBadge').textContent=isFinite(terPct)?`TER% : ${terPct.toFixed(2)} %`:'TER% : —';
-  document.getElementById('clBadge').textContent=`Confiance cible : ${(CL*100).toFixed(1)} %`;
+  // RIA et CL
+  const riaPct = riaFromMatrix(cra,aosp);
+  let CL = 1 - riaPct/100;
  
-  const out={technique,P,TE,keyCount,keyAmount,Pp,TEp,riaPct,CL,terPct,policy};
-  if(alerts.length){renderResult(out,alerts); window._lastReport=buildReportObject(out,alerts); return;}
+  // Badges TER/CL
+  document.getElementById('terBadge').textContent = isFinite(terPct) ? `TER% : ${terPct.toFixed(2)} %` : "TER% : —";
+  document.getElementById('clBadge').textContent = `Confiance cible : ${(CL*100).toFixed(1)} %`;
  
-  const eerRatio=(eerPct!=null && P>0)?(Math.max(0,eerPct)/(100*TE/P)):0;
+  // Ajustements MUS par EER/m
+  const eerRatio = (eerPct!=null && population>0) ? (Math.max(0, eerPct)/ (100* tolerable/population)) : 0;
  
-  if(technique==="MUS"){
-    let CF=cfFromRIA(riaPct);
-    if(eerPct!=null && eerPct>0){const alpha=0.8; CF=CF*(1+alpha*eerRatio); out.notes=[`Pénalité EER : CF×(1+${alpha}×EER/TER).`]}
-    if(mErrors>0){const delta=Math.min(1,0.3*mErrors); CF+=delta; out.notes=[...(out.notes||[]),`Majoration CF pour m=${mErrors} : +${delta.toFixed(2)}.`]}
-    const SI=TEp/CF;
-    const n=(SI>0 && Pp>0)?Math.ceil(Pp/SI):NaN;
-    Object.assign(out,{CF,SI,n,eerPct,mErrors,relErr});
-    renderResult(out,alerts);
-  } else if(technique==="Random"){
-    if(!(N>0)) alerts.push("Renseignez N (unités) pour l'aléatoire.");
-    if(!(p>=0 && p<=1)) alerts.push("p doit être entre 0 et 1.");
-    const Z=nearestZ(CL); const d=terPct/100; const Np=Math.max(1,(N||1)-(keyCount||0));
-    const n0=(Z*Z*p*(1-p))/(d*d); const n=n0/(1+(n0-1)/Np);
-    Object.assign(out,{Z,d,p,N,Np,n0,n:Math.ceil(n)});
-    renderResult(out,alerts);
-  } else if(technique==="Discovery"){
-    if(!(der>0 && der<1)) alerts.push("DER doit être entre 0 et 1 (Discovery).");
-    const n=Math.ceil(Math.log(1-CL)/Math.log(1-der));
-    Object.assign(out,{DER:der,n});
-    renderResult(out,alerts);
+  let out = {technique, P:population, TE:tolerable, Pp, TEp, riaPct, CL, terPct, keyCount, keyAmount, policy};
+  if (alerts.length){
+    renderResult(out, alerts);
+    window._lastReport = buildReportObject(out, alerts);
+    return;
   }
  
-  window._lastReport=buildReportObject(out,alerts);
-}
- 
-function renderResult(o,alerts){
-  const box=document.getElementById('resultBox');
-  const cls=alerts.length?'err':'ok';
-  let html=`<h3>Résultat • <span class="${cls}">${o.technique}</span></h3>`;
-  if(alerts.length){html+=`<p class="err"><strong>Vérifications requises :</strong><br>${alerts.map(a=>'• '+a).join('<br>')}</p>`}
-  html+=`<div class="kv"><div class="k">Population (P)</div><div class="v">${fmtEuro(o.P)}</div></div>`;
-  html+=`<div class="kv"><div class="k">Seuil tolérable (TE)</div><div class="v">${fmtEuro(o.TE)}</div></div>`;
-  html+=`<div class="kv"><div class="k">Key items (nb / €)</div><div class="v">${fmt(o.keyCount||0)} / ${fmtEuro(o.keyAmount||0)}</div></div>`;
-  html+=`<div class="kv"><div class="k">Politique key items</div><div class="v">${o.policy==='microstart'?'MicroSTART-like (TE′ = TE)':'Conservatrice (TE′ = TE − key)'}</div></div>`;
-  html+=`<div class="kv"><div class="k">Population résiduelle (P′)</div><div class="v">${fmtEuro(o.Pp)}</div></div>`;
-  html+=`<div class="kv"><div class="k">Seuil résiduel (TE′)</div><div class="v">${fmtEuro(o.TEp)}</div></div>`;
-  html+=`<div class="kv"><div class="k">RIA cible (1−CL)</div><div class="v">${o.riaPct.toFixed(2)} %</div></div>`;
-  html+=`<div class="kv"><div class="k">Confiance statistique (CL)</div><div class="v">${(o.CL*100).toFixed(1)} %</div></div>`;
-  if(o.technique==="MUS"){
-    html+=`<div class="kv"><div class="k">Confidence factor (CF)</div><div class="v">${o.CF?o.CF.toFixed(2):'—'}</div></div>`;
-    html+=`<div class="kv"><div class="k">Intervalle monétaire (SI)</div><div class="v">${isFinite(o.SI)?fmtEuro(o.SI):'—'}</div></div>`;
-    html+=`<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
-  } else if(o.technique==="Random"){
-    html+=`<div class="kv"><div class="k">N (après key items)</div><div class="v">${fmt(o.Np||0)}</div></div>`;
-    html+=`<div class="kv"><div class="k">Précision d = TER%</div><div class="v">${(o.d*100).toFixed(2)} %</div></div>`;
-    html+=`<div class="kv"><div class="k">Statistique Z</div><div class="v">${o.Z?.toFixed(3)}</div></div>`;
-    html+=`<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
-  } else {
-    html+=`<div class="kv"><div class="k">DER</div><div class="v">${(o.DER*100).toFixed(3)} %</div></div>`;
-    html+=`<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
+  if (technique === "MUS"){
+    let CF = cfFromRIA(riaPct);
+    if (eerPct!=null && eerPct>0){
+      const alpha = 0.8;
+      CF = CF * (1 + alpha * eerRatio);
+      out.notes = [`Pénalité MUS pour erreur attendue : CF × (1 + ${alpha} × EER/TER).`];
+    }
+    if (mErrors>0){
+      const delta = Math.min(1.0, 0.3*mErrors);
+      CF = CF + delta;
+      out.notes = [...(out.notes||[]), `Majoration CF pour erreurs planifiées (m=${mErrors}) : +${delta.toFixed(2)}.`];
+    }
+    const SI = TEp/CF;
+    const n = (SI>0 && Pp>0) ? Math.ceil(Pp / SI) : NaN;
+    Object.assign(out,{CF,SI,n, eerPct, mErrors, relErr});
+    renderResult(out, alerts);
   }
-  if(o.notes?.length){html+=`<div class="muted" style="margin-top:8px">${o.notes.map(t=>'• '+t).join('<br>')}</div>`}
-  box.innerHTML=html;
+  else if (technique === "Random"){
+    if (!(N>0)) alerts.push("Veuillez renseigner N (nombre d'unités) pour l'aléatoire.");
+    if (!(p>=0 && p<=1)) alerts.push("p (prévalence) doit être entre 0 et 1.");
+    const Z = nearestZ(CL);
+    const d = terPct/100;
+    const Np = Math.max(1, (N||1) - (keyCount||0));
+    const n0 = (Z*Z * p*(1-p)) / (d*d);
+    const n = n0 / (1 + (n0 - 1)/Np);
+    Object.assign(out,{Z,d,p,N,Np,n0, n:Math.ceil(n)});
+    renderResult(out, alerts);
+  }
+  else if (technique === "Discovery"){
+    if (!(der>0 && der<1)) alerts.push("DER (taux tolérable) doit être entre 0 et 1 pour Discovery.");
+    const n = Math.ceil( Math.log(1-CL) / Math.log(1-der) );
+    Object.assign(out,{DER:der, n});
+    renderResult(out, alerts);
+  }
+ 
+  window._lastReport = buildReportObject(out, alerts);
 }
  
-/* ---------- Report / Exports ---------- */
-function buildReportObject(out,alerts){
-  const now=new Date();
-  const base={
-    timestamp:now.toISOString(), technique:out.technique, policy:out.policy,
-    population:out.P, tolerable:out.TE, key_items_count:out.keyCount||0, key_items_amount:out.keyAmount||0,
-    population_residuelle:out.Pp, seuil_residuel:out.TEp, ria_pct:out.riaPct, cl_pct:out.CL*100, alerts:alerts.slice()
+function renderResult(o, alerts){
+  const box = document.getElementById('resultBox');
+  const warn = [];
+  if (o.TEp===0) warn.push("TE′ = 0 → impossible de calculer (div/0).");
+  const cls = alerts.length? 'err' : (warn.length? 'warn' : 'ok');
+  let html = `<h3>Résultat • <span class="${cls}">${o.technique}</span></h3>`;
+  if (alerts.length){
+    html += `<p class="err"><strong>Vérifications requises :</strong><br>${alerts.map(a=>`• ${a}`).join('<br>')}</p>`;
+  }
+  html += `<div class="kv"><div class="k">Population (P)</div><div class="v">${fmtEuro(o.P)}</div></div>`;
+  html += `<div class="kv"><div class="k">Seuil tolérable (TE)</div><div class="v">${fmtEuro(o.TE)}</div></div>`;
+  html += `<div class="kv"><div class="k">Key items (nb / €)</div><div class="v">${fmt(o.keyCount||0)} / ${fmtEuro(o.keyAmount||0)}</div></div>`;
+  html += `<div class="kv"><div class="k">Politique key items</div><div class="v">${o.policy==='microstart'?'MicroSTART-like (TE′ = TE)':'Conservatrice (TE′ = TE − key)'}</div></div>`;
+  html += `<div class="kv"><div class="k">Population résiduelle (P′)</div><div class="v">${fmtEuro(o.Pp)}</div></div>`;
+  html += `<div class="kv"><div class="k">Seuil résiduel (TE′)</div><div class="v">${fmtEuro(o.TEp)}</div></div>`;
+  html += `<div class="kv"><div class="k">RIA cible (1−CL)</div><div class="v">${o.riaPct?.toFixed(2)} %</div></div>`;
+  html += `<div class="kv"><div class="k">Confiance statistique (CL)</div><div class="v">${(o.CL*100)?.toFixed(1)} %</div></div>`;
+ 
+  if (o.technique==="MUS"){
+    html += `<div class="kv"><div class="k">Confidence factor (CF)</div><div class="v">${o.CF?o.CF.toFixed(2):'—'}</div></div>`;
+    html += `<div class="kv"><div class="k">Intervalle monétaire (SI)</div><div class="v">${isFinite(o.SI)?fmtEuro(o.SI):'—'}</div></div>`;
+    html += `<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
+  } else if (o.technique==="Random"){
+    html += `<div class="kv"><div class="k">N (après retrait key items)</div><div class="v">${fmt(o.Np||0)}</div></div>`;
+    html += `<div class="kv"><div class="k">Précision cible d = TER%</div><div class="v">${(o.d*100).toFixed(2)} %</div></div>`;
+    html += `<div class="kv"><div class="k">Statistique Z</div><div class="v">${o.Z?.toFixed(3)}</div></div>`;
+    html += `<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
+  } else if (o.technique==="Discovery"){
+    html += `<div class="kv"><div class="k">DER (taux d'occurrence tolérable)</div><div class="v">${(o.DER*100).toFixed(3)} %</div></div>`;
+    html += `<div class="kv"><div class="k">Taille d'échantillon (n)</div><div class="v">${isFinite(o.n)?fmt(o.n):'—'}</div></div>`;
+  }
+  if (o.notes?.length){
+    html += `<div class="muted" style="margin-top:8px">${o.notes.map(t=>`• ${t}`).join('<br>')}</div>`;
+  }
+  box.innerHTML = html;
+}
+ 
+/* --------- Construction d'un rapport exploitable (pour CSV/PDF) --------- */
+function buildReportObject(out, alerts){
+  const now = new Date();
+  const base = {
+    timestamp: now.toISOString(),
+    technique: out.technique,
+    policy: out.policy,
+    population: out.P, tolerable: out.TE,
+    key_items_count: out.keyCount||0, key_items_amount: out.keyAmount||0,
+    population_residuelle: out.Pp, seuil_residuel: out.TEp,
+    ria_pct: out.riaPct, cl_pct: (out.CL*100),
+    alerts: alerts.slice()
   };
-  if(out.technique==="MUS"){Object.assign(base,{CF:out.CF, SI:out.SI, n:out.n, eer_pct:out.eerPct??null, planned_errors:out.mErrors??null, relative_error_pct:out.relErr??null})}
-  if(out.technique==="Random"){Object.assign(base,{N_total:out.N??null, N_apres_key:out.Np??null, p:out.p??null, Z:out.Z??null, precision_d:out.d??null, n:out.n})}
-  if(out.technique==="Discovery"){Object.assign(base,{DER:out.DER??null, n:out.n})}
+  if (out.technique === "MUS"){
+    Object.assign(base,{
+      CF: out.CF, SI: out.SI, n: out.n,
+      eer_pct: out.eerPct ?? null, planned_errors: out.mErrors ?? null, relative_error_pct: out.relErr ?? null
+    });
+  } else if (out.technique === "Random"){
+    Object.assign(base,{
+      N_total: out.N ?? null, N_apres_key: out.Np ?? null,
+      p: out.p ?? null, Z: out.Z ?? null, precision_d: out.d ?? null, n: out.n
+    });
+  } else if (out.technique === "Discovery"){
+    Object.assign(base,{
+      DER: out.DER ?? null, n: out.n
+    });
+  }
   return base;
 }
-function exportCSV(){
-  const rep=window._lastReport; if(!rep){alert("Calcule d'abord un résultat.");return;}
-  const headers=Object.keys(rep);
-  const line=headers.map(h=>{const v=rep[h]; if(v==null) return ''; const s=String(v); return s.includes(',')?`"${s.replace(/"/g,'""')}"`:s}).join(',');
-  const csv=headers.join(',')+'\n'+line+'\n';
-  const blob=new Blob([csv],{type:'text/csv;charset=utf-8;'}); const url=URL.createObjectURL(blob);
-  const a=document.createElement('a'); a.href=url; a.download=`sample_size_${rep.technique}_${new Date().toISOString().split('T')[0]}.csv`;
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
-}
-function exportPDF(){
-  const rep=window._lastReport; if(!rep){alert("Calcule d'abord un résultat.");return;}
-  const style=`<style>
-    body{font-family:Arial,system-ui;margin:24px;color:#111}
-    h1{font-size:20px;margin:0 0 8px} h2{font-size:16px;margin:18px 0 8px}
-    table{border-collapse:collapse;width:100%} th,td{border:1px solid #ccc;padding:8px;font-size:12px}
-    th{background:#f3f6fb;text-align:left} @page{size:A4;margin:16mm} .small{font-size:11px;color:#555}
-  </style>`;
-  const rows=Object.entries(rep).map(([k,v])=>{
-    let label=k.replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase()); if(k==='timestamp')label='Horodatage'; if(k==='technique')label='Technique';
-    return `<tr><th>${label}</th><td>${v==null?'':v}</td></tr>`}).join('');
-  const html=`<html><head><meta charset="utf-8">${style}</head><body>
-    <h1>Rapport de calcul – Taille d'échantillon</h1>
-    <div class="small">Généré le ${new Date().toLocaleString('fr-FR')}</div>
-    <h2>Paramètres & Résultats</h2><table>${rows}</table>
-    <p class="small">Astuce : utilisez « Enregistrer en PDF » dans la boîte de dialogue d'impression.</p></body></html>`;
-  const w=window.open('','_blank','width=900,height=700'); if(!w){alert('Autorisez les pop-ups.');return;}
-  w.document.open(); w.document.write(html); w.document.close(); setTimeout(()=>{w.focus(); w.print();},300);
-}
  
-/* ---------- UI ---------- */
-function syncVisibility(){
-  const t=document.getElementById('technique').value;
-  document.querySelectorAll('.random-only').forEach(e=>e.style.display=(t==='Random')?'block':'none');
-  document.querySelectorAll('.mus-only').forEach(e=>e.style.display=(t==='MUS')?'block':'none');
-  document.querySelectorAll('.disc-only').forEach(e=>e.style.display=(t==='Discovery')?'block':'none');
-}
-document.getElementById('technique').addEventListener('change',syncVisibility); syncVisibility();
-document.getElementById('calcBtn').addEventListener('click',compute);
-document.getElementById('resetBtn').addEventListener('click',()=>{
-  document.querySelectorAll('input').forEach(i=>i.value='');
-  document.getElementById('cra').value='Medium'; document.getElementById('aosp').value='Little';
-  document.getElementById('technique').value='MUS'; document.getElementById('policy').value='microstart';
-  syncVisibility(); document.getElementById('resultBox').innerHTML='<h3>En attente des paramètres…</h3><p class="help">Renseigne les champs et clique sur <strong>Calculer</strong>.</p>';
-  document.getElementById('terBadge').textContent='TER% : —'; document.getElementById('clBadge').textContent='Confiance cible : —';
-  document.getElementById('alerts').textContent=''; window._lastReport=null;
-});
-['population','tolerable'].forEach(id=>{
-  document.getElementById(id).addEventListener('input',()=>{
-    const P=+document.getElementById('population').value; const TE=+document.getElementById('tolerable').value;
-    const terPct=(P>0 && TE>=0)?(100*TE/P):NaN;
-    document.getElementById('terBadge').textContent=isFinite(terPct)?`TER% : ${terPct.toFixed(2)} %`:'TER% : —';
-  });
-});
-document.getElementById('csvBtn').addEventListener('click',exportCSV);
-document.getElementById('pdfBtn').addEventListener('click',exportPDF);
-</script>
-</body>
-</html>
+/* ---------- Export CSV ---------- */
+function exportCSV(){
+  const rep = window._lastReport;
+  if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
+  // Aplatir l'objet en colon
