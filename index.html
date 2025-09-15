@@ -440,4 +440,103 @@ function buildReportObject(out, alerts){
 function exportCSV(){
   const rep = window._lastReport;
   if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
-  // Aplatir l'objet en colon
+  // Aplatir l'objet en colonnes
+  const headers = Object.keys(rep);
+  const csvLine = headers.map(h=>{
+    const v = rep[h];
+    if (v==null) return '';
+    if (typeof v === 'string' && v.includes(',')) return `"${v.replace(/"/g,'""')}"`;
+    return v;
+  }).join(',');
+  const csv = headers.join(',') + '\n' + csvLine + '\n';
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const stamp = new Date().toISOString().split('T')[0];
+  a.download = `sample_size_${rep.technique}_${stamp}.csv`;
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+ 
+/* ---------- Export PDF (fenêtre d'impression dédiée) ---------- */
+function exportPDF(){
+  const rep = window._lastReport;
+  if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
+ 
+  // Compose HTML minimal pour impression
+  const style = `
+  <style>
+    body{font-family: Arial, system-ui; margin:24px; color:#111}
+    h1{font-size:20px; margin:0 0 8px 0}
+    h2{font-size:16px; margin:18px 0 8px}
+    table{border-collapse:collapse; width:100%}
+    th,td{border:1px solid #ccc; padding:8px; font-size:12px}
+    th{background:#f3f6fb; text-align:left}
+    .muted{color:#555}
+    @page{size: A4; margin:16mm}
+    .small{font-size:11px}
+  </style>`;
+  const rows = Object.entries(rep).map(([k,v])=>{
+    let label = k.replaceAll('_',' ').replace(/\b\w/g,m=>m.toUpperCase());
+    if (k==='timestamp'){ label='Horodatage'; }
+    if (k==='technique'){ label='Technique'; }
+    if (k==='policy'){ label='Politique Key Items'; }
+    return `<tr><th>${label}</th><td>${v==null?'':v}</td></tr>`;
+  }).join('');
+ 
+  const html = `
+  <html><head><meta charset="utf-8">${style}</head>
+  <body>
+    <h1>Rapport de calcul – Taille d'échantillon</h1>
+    <div class="small muted">Généré le ${new Date().toLocaleString('fr-FR')}</div>
+    <h2>Paramètres & Résultats</h2>
+    <table>${rows}</table>
+    <p class="small muted">Astuce : utilisez « Enregistrer au format PDF » dans la boîte de dialogue d'impression.</p>
+  </body></html>`;
+ 
+  const w = window.open('', '_blank', 'width=900,height=700');
+  if (!w){ alert('Le bloqueur de fenêtres a empêché l\'ouverture. Autorisez les pop-ups pour ce site.'); return; }
+  w.document.open(); w.document.write(html); w.document.close();
+  // Laisser un petit délai pour le rendu avant impression
+  setTimeout(()=>{ w.focus(); w.print(); }, 300);
+}
+ 
+/* ---------- UI comportements ---------- */
+function syncVisibility(){
+  const technique = document.getElementById('technique').value;
+  document.querySelectorAll('.random-only').forEach(el=>el.style.display = (technique==='Random')?'block':'none');
+  document.querySelectorAll('.mus-only').forEach(el=>el.style.display = (technique==='MUS')?'block':'none');
+  document.querySelectorAll('.disc-only').forEach(el=>el.style.display = (technique==='Discovery')?'block':'none');
+}
+document.getElementById('technique').addEventListener('change', syncVisibility);
+syncVisibility();
+ 
+document.getElementById('calcBtn').addEventListener('click', compute);
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  document.querySelectorAll('input').forEach(i=>i.value='');
+  document.getElementById('cra').value='Medium';
+  document.getElementById('aosp').value='Little';
+  document.getElementById('technique').value='MUS';
+  document.getElementById('policy').value='microstart';
+  syncVisibility();
+  document.getElementById('resultBox').innerHTML='<h3>En attente des paramètres…</h3><p class="help">Renseigne les champs et clique sur <strong>Calculer</strong>.</p>';
+  document.getElementById('terBadge').textContent='TER% : —';
+  document.getElementById('clBadge').textContent='Confiance cible : —';
+  document.getElementById('alerts').textContent='';
+  window._lastReport = null;
+});
+['population','tolerable'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', ()=>{
+    const population = +document.getElementById('population').value;
+    const tolerable  = +document.getElementById('tolerable').value;
+    const terPct = (population>0 && tolerable>=0) ? (100*tolerable/population) : NaN;
+    document.getElementById('terBadge').textContent = isFinite(terPct)? `TER% : ${terPct.toFixed(2)} %` : 'TER% : —';
+  });
+});
+ 
+document.getElementById('csvBtn').addEventListener('click', exportCSV);
+document.getElementById('pdfBtn').addEventListener('click', exportPDF);
+</script>
+</body>
+</html>
