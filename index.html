@@ -6,72 +6,128 @@
 <title>Calculateur d'échantillon – Audit (MUS / Aléatoire / Discovery)</title>
 <style>
   :root{
-    --bg:#0b1220; --panel:#121b2e; --muted:#9fb0ce; --text:#e8eefc;
-    --accent:#5aa0ff; --green:#36d399; --red:#ff7b7b; --yellow:#ffd166;
-    --line:#1f2b46;
+    --bg:#f8fafc; --panel:#ffffff; --muted:#64748b; --text:#1e293b;
+    --accent:#3b82f6; --green:#10b981; --red:#ef4444; --yellow:#f59e0b;
+    --line:#e2e8f0; --hover:#f1f5f9;
   }
   *{box-sizing:border-box}
   html,body{height:100%}
   body{
     margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans";
-    background:linear-gradient(180deg, #0a1020 0%, #0b1220 100%);
-    color:var(--text);
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color:var(--text); min-height:100vh;
   }
   header{
-    padding:18px 16px; border-bottom:1px solid var(--line);
-    background:linear-gradient(180deg,#0e162a 0,#0b1220 100%);
+    padding:24px 20px; border-bottom:1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
     position:sticky; top:0; z-index:10;
   }
-  header .title{display:flex; align-items:center; gap:12px; flex-wrap:wrap}
-  header .badge{font-size:12px; padding:4px 8px; background:#0f1a31; border:1px solid var(--line); border-radius:999px; color:var(--muted)}
-  main{max-width:1100px; margin:24px auto; padding:0 16px; display:grid; grid-template-columns: 1fr 1fr; gap:16px}
-  @media (max-width: 940px){ main{grid-template-columns:1fr} }
+  header .title{display:flex; align-items:center; gap:16px; flex-wrap:wrap}
+  header h1{margin:0; font-size:24px; font-weight:700; color:white; text-shadow:0 2px 4px rgba(0,0,0,0.3)}
+  header .badge{
+    font-size:13px; padding:6px 12px; background:rgba(255,255,255,0.2); 
+    border:1px solid rgba(255,255,255,0.3); border-radius:20px; color:white;
+    backdrop-filter: blur(5px);
+  }
+  main{max-width:1200px; margin:32px auto; padding:0 20px; display:grid; grid-template-columns: 1fr 1fr; gap:24px}
+  @media (max-width: 1024px){ main{grid-template-columns:1fr; gap:20px} }
   .card{
-    background:radial-gradient(1600px 500px at -200px 0px, rgba(90,160,255,.12), transparent 60%), var(--panel);
-    border:1px solid var(--line); border-radius:16px; padding:16px 14px 14px;
-    box-shadow: 0 6px 16px rgba(0,0,0,.25);
+    background:var(--panel); border:1px solid var(--line); border-radius:16px; 
+    padding:24px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
-  .card h2{font-size:16px; margin:4px 0 12px 0; color:#dbe7ff; letter-spacing:.2px}
-  .grid{display:grid; grid-template-columns:1fr 1fr; gap:12px}
-  @media (max-width:640px){ .grid{grid-template-columns:1fr} }
-  label{display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; color:#cfe0ff}
+  .card:hover{transform: translateY(-2px); box-shadow: 0 20px 40px rgba(0,0,0,0.15)}
+  .card h2{
+    font-size:20px; margin:0 0 20px 0; color:var(--accent); 
+    font-weight:600; border-bottom:2px solid #e2e8f0; padding-bottom:8px;
+  }
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+  @media (max-width:768px){ .grid{grid-template-columns:1fr} }
+  label{
+    display:block; margin-bottom:12px; font-size:14px; font-weight:500; color:var(--text);
+  }
+  label .label-text{display:block; margin-bottom:6px}
   input[type="number"], input[type="text"], select{
-    width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:12px; background:#0f182b;
-    color:var(--text); outline:none;
+    width:100%; padding:12px 16px; border:2px solid var(--line); border-radius:8px; 
+    background:white; color:var(--text); outline:none; font-size:14px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
   }
-  input::placeholder{color:#8193b7}
-  .row{display:flex; gap:12px; flex-wrap:wrap}
-  .help{font-size:12px; color:var(--muted)}
-  .muted{color:var(--muted); font-size:12px; margin-top:4px}
-  .pill{padding:2px 8px; border-radius:999px; border:1px solid var(--line); background:#0e172b; font-size:12px; color:#bcd1ff}
+  input:focus, select:focus{
+    border-color:var(--accent); box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+  }
+  input::placeholder{color:var(--muted)}
+  .help{font-size:13px; color:var(--muted); margin-top:4px}
+  .muted{color:var(--muted); font-size:13px; margin-top:6px}
+  .pill{
+    display:inline-block; padding:4px 8px; border-radius:12px; 
+    background:#e0f2fe; color:#0369a1; font-size:11px; font-weight:600;
+    margin-left:8px;
+  }
   .btn{
-    padding:12px 14px; border-radius:12px; border:1px solid #2a3a61; background:linear-gradient(180deg,#163260 0,#12264a 100%);
-    color:#dfe9ff; font-weight:600; cursor:pointer; transition:.18s transform ease;
+    padding:14px 20px; border-radius:10px; border:none; 
+    background:linear-gradient(135deg, var(--accent) 0%, #1d4ed8 100%);
+    color:white; font-weight:600; cursor:pointer; font-size:14px;
+    transition: all 0.2s ease; display:inline-flex; align-items:center; gap:8px;
   }
-  .btn:hover{transform:translateY(-1px)}
-  .btn.secondary{background:#111c33}
-  .actions{display:flex; gap:10px; flex-wrap:wrap}
+  .btn:hover{transform:translateY(-1px); box-shadow: 0 8px 25px rgba(59,130,246,0.3)}
+  .btn.secondary{
+    background:linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+  }
+  .btn.secondary:hover{box-shadow: 0 8px 25px rgba(107,114,128,0.3)}
+  .actions{display:flex; gap:12px; flex-wrap:wrap; margin-top:20px}
   .result{
-    background:linear-gradient(180deg,#0e1a31 0, #0e1526 100%); border:1px dashed #2b3b63; border-radius:16px; padding:14px;
+    background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); 
+    border:2px dashed var(--accent); border-radius:12px; padding:20px;
   }
-  .result h3{margin:2px 0 8px 0}
-  .kv{display:grid; grid-template-columns: 1fr auto; gap:8px; padding:8px 0; border-bottom:1px dashed #223155}
+  .result h3{margin:0 0 16px 0; color:var(--accent); font-size:18px}
+  .kv{
+    display:grid; grid-template-columns: 1fr auto; gap:16px; padding:12px 0; 
+    border-bottom:1px solid #e2e8f0;
+  }
   .kv:last-child{border-bottom:none}
-  .kv .k{color:#a9c1f4}
-  .kv .v{font-weight:700}
+  .kv .k{color:var(--muted); font-weight:500}
+  .kv .v{font-weight:700; color:var(--text)}
   .ok{color:var(--green)} .warn{color:var(--yellow)} .err{color:var(--red)}
-  .footer-note{opacity:.85; font-size:12px; color:#aabfe9}
-  .chip{font-size:11px; padding:2px 6px; border-radius:8px; border:1px solid #2a3b60; background:#0f1930; color:#cfe0ff}
-  details{background:#0f1930; border:1px solid #24365c; border-radius:12px; padding:10px 12px}
-  details summary{cursor:pointer; user-select:none}
-  .spacer{height:8px}
-  .export-bar{display:flex; gap:10px; flex-wrap:wrap; margin-top:10px}
+  .footer-note{
+    opacity:0.8; font-size:13px; color:var(--muted); 
+    background:#fef3c7; padding:12px; border-radius:8px; border-left:4px solid var(--yellow);
+  }
+  .chip{
+    font-size:12px; padding:6px 10px; border-radius:20px; 
+    border:1px solid var(--line); background:var(--hover); color:var(--text);
+    font-weight:500;
+  }
+  details{
+    background:#f8fafc; border:1px solid var(--line); border-radius:10px; 
+    padding:16px; margin:16px 0;
+  }
+  details summary{
+    cursor:pointer; user-select:none; font-weight:600; color:var(--accent);
+    padding:8px 0;
+  }
+  details[open] summary{border-bottom:1px solid var(--line); margin-bottom:16px; padding-bottom:12px}
+  .spacer{height:16px}
+  .export-bar{display:flex; gap:12px; flex-wrap:wrap; margin-top:16px}
+  .notice{
+    background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+    border: 1px solid #10b981; border-radius: 12px; padding: 20px; margin-bottom: 24px;
+    border-left: 4px solid var(--green);
+  }
+  .notice h3{margin: 0 0 12px 0; color: var(--green); font-size: 16px}
+  .notice p{margin: 8px 0; line-height: 1.6; color: #065f46}
+  .methodology{
+    background: #fefce8; border: 1px solid #eab308; border-radius: 10px; 
+    padding: 16px; margin-top: 16px; border-left: 4px solid var(--yellow);
+  }
+  .methodology h4{margin: 0 0 12px 0; color: #92400e; font-size: 14px}
+  .methodology ul{margin: 8px 0; padding-left: 20px; color: #92400e}
+  .methodology li{margin: 4px 0; line-height: 1.5}
 </style>
 </head>
 <body>
 <header>
   <div class="title">
-    <div style="font-weight:800; font-size:18px; color:#eaf1ff">Calculateur d'échantillon d'audit</div>
+    <h1>Calculateur d'échantillon d'audit</h1>
     <span class="badge">Mono-fichier • Responsive</span>
     <span class="badge">Techniques : MUS / Aléatoire / Discovery</span>
   </div>
@@ -81,20 +137,30 @@
   <!-- Paramètres principaux -->
   <section class="card">
     <h2>Paramètres de la population</h2>
+    
+    <div class="notice">
+      <h3>🎯 Aide-mémoire méthodologique</h3>
+      <p><strong>Cet outil calcule la taille d'échantillon optimale</strong> selon les techniques d'audit statistique reconnues : MUS/PPS, échantillonnage aléatoire et discovery sampling.</p>
+      <p><strong>Important :</strong> Les paramètres et seuils doivent être validés par votre cabinet. Le jugement professionnel reste indispensable pour l'interprétation des résultats.</p>
+    </div>
+
     <div class="grid">
       <div>
-        <label>Valeur de la population (€)
+        <label>
+          <span class="label-text">Valeur de la population (€)</span>
           <input id="population" type="number" min="0" step="0.01" placeholder="ex. 10 000 000" />
         </label>
       </div>
       <div>
-        <label>Seuil/tolerable error (€)
+        <label>
+          <span class="label-text">Seuil/tolerable error (€)</span>
           <input id="tolerable" type="number" min="0" step="0.01" placeholder="ex. 250 000" />
         </label>
         <div class="muted">TER% = TE / Population (calculé automatiquement)</div>
       </div>
       <div>
-        <label>Risque combiné (CRA)
+        <label>
+          <span class="label-text">Risque combiné (CRA)</span>
           <select id="cra">
             <option value="VeryLow">Très faible</option>
             <option value="Low">Faible</option>
@@ -106,7 +172,8 @@
         </label>
       </div>
       <div>
-        <label>Assurance des autres procédures subst.
+        <label>
+          <span class="label-text">Assurance des autres procédures subst.</span>
           <select id="aosp">
             <option value="Little" selected>Faible (Little)</option>
             <option value="Some">Modérée (Some)</option>
@@ -116,7 +183,8 @@
         </label>
       </div>
       <div>
-        <label>Technique d'échantillonnage
+        <label>
+          <span class="label-text">Technique d'échantillonnage</span>
           <select id="technique">
             <option value="MUS" selected>MUS / PPS (€)</option>
             <option value="Random">Aléatoire (unités)</option>
@@ -125,31 +193,34 @@
         </label>
       </div>
       <div>
-        <label>Erreur attendue (EER %) <span class="pill">optionnel</span>
+        <label>
+          <span class="label-text">Erreur attendue (EER %) <span class="pill">optionnel</span></span>
           <input id="eer" type="number" min="0" step="0.01" placeholder="ex. 0,30" />
         </label>
         <div class="muted">En % de la population (0 = aucune erreur anticipée)</div>
       </div>
     </div>
  
-    <div class="spacer"></div>
     <details>
-      <summary><strong>Key items et paramètres avancés</strong> (clique pour dérouler)</summary>
-      <div class="grid" style="margin-top:10px">
+      <summary>Key items et paramètres avancés</summary>
+      <div class="grid">
         <div>
-          <label>Key items – nombre
+          <label>
+            <span class="label-text">Key items – nombre</span>
             <input id="keyCount" type="number" min="0" step="1" placeholder="ex. 5" />
           </label>
         </div>
         <div>
-          <label>Key items – montant total (€)
+          <label>
+            <span class="label-text">Key items – montant total (€)</span>
             <input id="keyAmount" type="number" min="0" step="0.01" placeholder="ex. 1 500 000" />
           </label>
           <div class="muted">Ces éléments seront testés à 100 %.</div>
         </div>
 
         <div>
-          <label>Politique key items
+          <label>
+            <span class="label-text">Politique key items</span>
             <select id="policy">
               <option value="microstart" selected>MicroSTART-like (TE′ = TE)</option>
               <option value="conservative">Conservatrice (TE′ = TE − key)</option>
@@ -159,52 +230,59 @@
         <div></div>
  
         <div class="random-only">
-          <label>Nombre d'unités (N) <span class="pill">aléatoire</span>
+          <label>
+            <span class="label-text">Nombre d'unités (N) <span class="pill">aléatoire</span></span>
             <input id="N" type="number" min="1" step="1" placeholder="ex. 12 000" />
           </label>
         </div>
         <div class="random-only">
-          <label>Prévalence attendue p (0-1) <span class="pill">aléatoire</span>
+          <label>
+            <span class="label-text">Prévalence attendue p (0-1) <span class="pill">aléatoire</span></span>
             <input id="p" type="number" min="0" max="1" step="0.001" placeholder="ex. 0,02" />
           </label>
           <div class="muted">Si vide, on utilisera p=0,5 (pire cas).</div>
         </div>
  
         <div class="mus-only">
-          <label>Erreurs planifiées (m) <span class="pill">MUS</span>
+          <label>
+            <span class="label-text">Erreurs planifiées (m) <span class="pill">MUS</span></span>
             <input id="mErrors" type="number" min="0" step="1" placeholder="ex. 0" />
           </label>
         </div>
         <div class="mus-only">
-          <label>Relative error % (si MUS &gt; 0 erreurs)
+          <label>
+            <span class="label-text">Relative error % (si MUS > 0 erreurs)</span>
             <input id="relErr" type="number" min="0" step="0.01" placeholder="ex. 100 (par défaut)" />
           </label>
         </div>
  
         <div class="disc-only">
-          <label>Taux d'occurrence tolérable DER (0-1) <span class="pill">Discovery</span>
+          <label>
+            <span class="label-text">Taux d'occurrence tolérable DER (0-1) <span class="pill">Discovery</span></span>
             <input id="der" type="number" min="0" max="1" step="0.0001" placeholder="ex. 0,02" />
           </label>
         </div>
       </div>
-      <div class="muted" style="margin-top:8px">
-        <strong>MicroSTART-like</strong> : les key items sortent de la population P (P′ = P − key) mais n'affectent pas TE (TE′ = TE).<br/>
-        <strong>Conservatrice</strong> : les key items "consomment" le seuil → TE′ = max(0, TE − montant key items).
+      <div class="methodology">
+        <h4>Politique des key items :</h4>
+        <ul>
+          <li><strong>MicroSTART-like</strong> : les key items sortent de la population P (P′ = P − key) mais n'affectent pas TE (TE′ = TE)</li>
+          <li><strong>Conservatrice</strong> : les key items "consomment" le seuil → TE′ = max(0, TE − montant key items)</li>
+        </ul>
       </div>
     </details>
  
-    <div class="spacer"></div>
     <div class="actions">
-      <button class="btn" id="calcBtn">Calculer la taille d'échantillon</button>
-      <button class="btn secondary" id="resetBtn">Réinitialiser</button>
+      <button class="btn" id="calcBtn">📊 Calculer la taille d'échantillon</button>
+      <button class="btn secondary" id="resetBtn">🔄 Réinitialiser</button>
       <span id="terBadge" class="chip">TER% : —</span>
       <span id="clBadge" class="chip">Confiance cible : —</span>
     </div>
-    <div id="alerts" class="muted" style="margin-top:8px"></div>
+    <div id="alerts" class="muted"></div>
  
     <div class="export-bar">
-      <button class="btn" id="csvBtn">Exporter CSV</button>
-      <button class="btn" id="pdfBtn">Exporter PDF</button>
+      <button class="btn" id="csvBtn">📄 Exporter CSV</button>
+      <button class="btn" id="pdfBtn">📋 Exporter PDF</button>
     </div>
   </section>
  
@@ -215,19 +293,24 @@
       <h3>En attente des paramètres…</h3>
       <p class="help">Renseigne les champs et clique sur <strong>Calculer</strong>.</p>
     </div>
-    <div class="spacer"></div>
+    
     <details>
-      <summary><strong>Hypothèses & méthode</strong></summary>
-      <div class="help" style="margin-top:8px; line-height:1.55">
-        • La matrice <em>Risque combiné × Assurance d'autres procédures</em> fixe une <strong>confiance statistique cible</strong> (CL), convertie en <em>RIA = 1 − CL</em>.<br/>
-        • <strong>MUS/PPS</strong> : intervalle monétaire <code>SI = TE′ / CF</code>, où <code>CF</code> dépend de RIA (tableau interpolé). Taille <code>n = ceil(P′ / SI) = ceil(P′·CF / TE′)</code>. 
-        • <strong>Aléatoire</strong> : formule binomiale <code>n0 = Z²·p(1−p)/d²</code>, d'où <code>d = TER%</code> ; correction de population finie <code>n = n0 / (1 + (n0 − 1)/N′)</code>. 
-        • <strong>Discovery</strong> : <code>n = ceil( ln(1−CL) / ln(1−DER) )</code>. 
-        • <strong>Key items</strong> : testés à 100 %, on calcule sur la population résiduelle <code>P′</code>. Selon la politique choisie : MicroSTART-like (<code>TE′ = TE</code>) ou conservatrice (<code>TE′ = TE − key</code>).
+      <summary>Hypothèses & méthode</summary>
+      <div class="methodology">
+        <h4>Bases méthodologiques :</h4>
+        <ul>
+          <li>La matrice <em>Risque combiné × Assurance d'autres procédures</em> fixe une <strong>confiance statistique cible</strong> (CL), convertie en <em>RIA = 1 − CL</em></li>
+          <li><strong>MUS/PPS</strong> : intervalle monétaire <code>SI = TE′ / CF</code>, où <code>CF</code> dépend de RIA (tableau interpolé). Taille <code>n = ceil(P′ / SI) = ceil(P′·CF / TE′)</code></li>
+          <li><strong>Aléatoire</strong> : formule binomiale <code>n0 = Z²·p(1−p)/d²</code>, d'où <code>d = TER%</code> ; correction de population finie <code>n = n0 / (1 + (n0 − 1)/N′)</code></li>
+          <li><strong>Discovery</strong> : <code>n = ceil( ln(1−CL) / ln(1−DER) )</code></li>
+          <li><strong>Key items</strong> : testés à 100 %, on calcule sur la population résiduelle <code>P′</code>. Selon la politique choisie : MicroSTART-like (<code>TE′ = TE</code>) ou conservatrice (<code>TE′ = TE − key</code>)</li>
+        </ul>
       </div>
     </details>
-    <div class="spacer"></div>
-    <p class="footer-note">⚠️ Cet outil est un aide-mémoire méthodologique. Calibrage interne des seuils/CL à valider par votre cabinet.</p>
+    
+    <div class="footer-note">
+      ⚠️ Cet outil est un aide-mémoire méthodologique. Le calibrage interne des seuils et niveaux de confiance doit être validé par votre cabinet d'audit.
+    </div>
   </section>
 </main>
  
@@ -285,7 +368,7 @@ function compute(){
   const technique = document.getElementById('technique').value;
   const policy = document.getElementById('policy').value;
  
-  const eerPct = (document.getElementById('eer').value === '' ? null : +document.getElementById('eer').value); // %
+  const eerPct = (document.getElementById('eer').value === '' ? null : +document.getElementById('eer').value);
   const keyCount = (document.getElementById('keyCount').value === '' ? 0 : +document.getElementById('keyCount').value);
   const keyAmount = (document.getElementById('keyAmount').value === '' ? 0 : +document.getElementById('keyAmount').value);
  
@@ -440,7 +523,6 @@ function buildReportObject(out, alerts){
 function exportCSV(){
   const rep = window._lastReport;
   if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
-  // Aplatir l'objet en colonnes
   const headers = Object.keys(rep);
   const csvLine = headers.map(h=>{
     const v = rep[h];
@@ -464,7 +546,6 @@ function exportPDF(){
   const rep = window._lastReport;
   if (!rep){ alert("Veuillez d'abord calculer un résultat."); return; }
  
-  // Compose HTML minimal pour impression
   const style = `
   <style>
     body{font-family: Arial, system-ui; margin:24px; color:#111}
@@ -498,7 +579,6 @@ function exportPDF(){
   const w = window.open('', '_blank', 'width=900,height=700');
   if (!w){ alert('Le bloqueur de fenêtres a empêché l\'ouverture. Autorisez les pop-ups pour ce site.'); return; }
   w.document.open(); w.document.write(html); w.document.close();
-  // Laisser un petit délai pour le rendu avant impression
   setTimeout(()=>{ w.focus(); w.print(); }, 300);
 }
  
